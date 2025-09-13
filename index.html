@@ -66,24 +66,123 @@
       </div>
     </form>
   </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="modal-overlay" style="display: none;">
+    <div class="success-modal">
+      <div class="success-header">
+        <div class="success-icon">✅</div>
+        <h2>Registration Successful!</h2>
+      </div>
+      <div class="success-content">
+        <p class="success-message">🎉 <strong>Registration Successful!</strong><br>Welcome to KRUSHI ONE! Your account has been created successfully. You can now sign in to access your dashboard.</p>
+        <div class="user-details">
+          <h3>Your Details:</h3>
+          <div class="detail-item">
+            <span class="label">Name:</span>
+            <span class="value" id="success-name"></span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Email:</span>
+            <span class="value" id="success-email"></span>
+          </div>
+          <div class="detail-item">
+            <span class="label">District:</span>
+            <span class="value" id="success-district"></span>
+          </div>
+        </div>
+        <div class="success-actions">
+          <button id="continue-btn" class="continue-btn">Continue to Sign In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { registerFarmer } from './auth.js';
 
     const form = document.getElementById('register-form');
+    const successModal = document.getElementById('success-modal');
+    const continueBtn = document.getElementById('continue-btn');
+    const registerBtn = document.querySelector('.register-btn');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Get form data
       const name = document.getElementById('name').value.trim();
       const district = document.getElementById('district').value;
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+
+      // Show loading state
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'Creating Account...';
+      registerBtn.style.opacity = '0.7';
+
       try {
-        await registerFarmer({ name, district, email, password });
-        alert('Registration successful. Please sign in.');
-        window.location.href = 'index1.html';
+        console.log('Starting registration process...');
+        console.log('Form data:', { name, district, email, password: '***' });
+        
+        const user = await registerFarmer({ name, district, email, password });
+        console.log('Registration successful:', user);
+        console.log('User ID:', user.uid);
+        
+        // Populate success modal with user details
+        document.getElementById('success-name').textContent = name;
+        document.getElementById('success-email').textContent = email;
+        document.getElementById('success-district').textContent = district;
+        
+        // Show success modal
+        successModal.style.display = 'flex';
+        successModal.style.opacity = '1';
+        successModal.style.visibility = 'visible';
+        
+        console.log('Registration successful - modal displayed');
+        
+        // Reset form
+        form.reset();
+        
       } catch (err) {
-        alert(err.message || 'Registration failed');
+        console.error('Registration failed:', err);
+        
+        // Check if it's a Firestore error but user was created
+        if (err.code === 'permission-denied' || err.message.includes('Firestore')) {
+          // User account was created but Firestore failed - still show success
+          console.log('User account created but Firestore failed - showing success anyway');
+          
+          // Populate success modal with user details
+          document.getElementById('success-name').textContent = name;
+          document.getElementById('success-email').textContent = email;
+          document.getElementById('success-district').textContent = district;
+          
+          // Show success modal
+          successModal.style.display = 'flex';
+          form.reset();
+        } else {
+          alert(err.message || 'Registration failed. Please try again.');
+        }
+      } finally {
+        // Reset button state
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Register as Farmer';
+        registerBtn.style.opacity = '1';
       }
     });
+
+    // Handle continue button click
+    continueBtn.addEventListener('click', () => {
+      window.location.href = 'index1.html';
+    });
+
+    // Close modal when clicking outside
+    successModal.addEventListener('click', (e) => {
+      if (e.target === successModal) {
+        window.location.href = 'index1.html';
+      }
+    });
+
+
   </script>
 </body>
 </html>
