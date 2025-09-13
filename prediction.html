@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Yield Predictor - Odisha</title>
+    <link rel="stylesheet" href="prediction.css">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+            <h1>Crop Yield Predictor</h1>
+            <p>For Farmers in Odisha</p>
+        </div>
+
+        <form id="prediction-form">
+            <div class="form-group">
+                <label for="district">Select District</label>
+                <div class="input-container">
+                    <select id="district" name="district">
+                        <option value="">Select your district</option>
+                        <option value="Cuttack">Cuttack</option>
+                        <option value="Balasore">Balasore</option>
+                        <option value="Puri">Puri</option>
+                        <option value="Sambalpur">Sambalpur</option>
+                        <option value="Koraput">Koraput</option>
+                        <option value="Kalahandi">Kalahandi</option>
+                        <option value="Ganjam">Ganjam</option>
+                        <option value="Angul">Angul</option>
+                        <option value="Rayagada">Rayagada</option>
+                        <option value="Bargarh">Bargarh</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="crop">Select Crop</label>
+                <div class="input-container">
+                    <select id="crop" name="crop">
+                        <option value="">Select your crop</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Ragi">Ragi</option>
+                        <option value="Mung">Mung</option>
+                        <option value="Cotton">Cotton</option>
+                        <option value="Groundnut">Groundnut</option>
+                        <option value="Sugarcane">Sugarcane</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="field-size">Field Size (in Hectares)</label>
+                <div class="input-container">
+                    <input type="number" id="field-size" name="field-size" placeholder="e.g., 2.5" step="0.1" min="0.1" required>
+                </div>
+            </div>
+
+            <button type="submit" id="predict-btn" class="submit-btn">
+                <span id="btn-text">Predict Yield</span>
+                <span id="btn-loader" class="hidden">
+                    <div class="loader"></div>
+                </span>
+            </button>
+        </form>
+
+        <div id="results-section" class="hidden">
+            <div class="fade-in">
+                <div class="results-title">Predicted Yield</div>
+                <div class="yield-display">
+                    <div class="yield-item">
+                        <div id="yield-per-hectare" class="yield-value">4.2</div>
+                        <div class="yield-label">Tonnes / Hectare</div>
+                    </div>
+                    <div class="yield-divider"></div>
+                    <div class="yield-item">
+                        <div id="total-yield" class="yield-value">10.5</div>
+                        <div class="yield-label">Total Tonnes for your field</div>
+                    </div>
+                </div>
+                <div class="disclaimer">Disclaimer: This is a data-driven estimate. Actual yield may vary.</div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index2.html">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('prediction-form');
+        const predictBtn = document.getElementById('predict-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        const resultsSection = document.getElementById('results-section');
+        const yieldPerHectareEl = document.getElementById('yield-per-hectare');
+        const totalYieldEl = document.getElementById('total-yield');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading state
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            predictBtn.disabled = true;
+            resultsSection.classList.add('hidden');
+
+            const district = document.getElementById('district').value;
+            const crop = document.getElementById('crop').value;
+            const fieldSize = parseFloat(document.getElementById('field-size').value);
+
+            if (isNaN(fieldSize) || fieldSize <= 0) {
+                alert("Please enter a valid field size.");
+                // Restore button state
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                predictBtn.disabled = false;
+                return;
+            }
+
+            // Mock model prediction (simulation)
+            // In a real app, you would send this data to a Python backend (API).
+            // For the hackathon, we simulate the result here.
+            setTimeout(() => {
+                let predictedYieldPerHectare;
+
+                // Simple logic to give different results for different crops
+                switch(crop) {
+                    case 'Rice':
+                        predictedYieldPerHectare = (4.0 + Math.random() * 0.8).toFixed(2); // e.g., 4.0 - 4.8
+                        break;
+                    case 'Ragi':
+                        predictedYieldPerHectare = (2.4 + Math.random() * 0.5).toFixed(2); // e.g., 2.4 - 2.9
+                        break;
+                    case 'Mung':
+                        predictedYieldPerHectare = (1.0 + Math.random() * 0.4).toFixed(2); // e.g., 1.0 - 1.4
+                        break;
+                    case 'Cotton':
+                        predictedYieldPerHectare = (2.0 + Math.random() * 0.3).toFixed(2); // e.g., 2.0 - 2.3
+                        break;
+                    case 'Groundnut':
+                        predictedYieldPerHectare = (1.8 + Math.random() * 0.4).toFixed(2); // e.g., 1.8 - 2.2
+                        break;
+                    case 'Sugarcane':
+                        predictedYieldPerHectare = (80 + Math.random() * 10).toFixed(2); // e.g., 80 - 90
+                        break;
+                    default:
+                        predictedYieldPerHectare = (3.0 + Math.random()).toFixed(2);
+                }
+                
+                const totalYield = (predictedYieldPerHectare * fieldSize).toFixed(2);
+
+                // Display results
+                yieldPerHectareEl.textContent = predictedYieldPerHectare;
+                totalYieldEl.textContent = totalYield;
+                resultsSection.classList.remove('hidden');
+
+                // Restore button state
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                predictBtn.disabled = false;
+
+            }, 1500); // Simulate a 1.5-second network delay
+        });
+    </script>
+</body>
+</html>

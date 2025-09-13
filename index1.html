@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRISHI - Login</title>
+  <link rel="stylesheet" href="index1.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="header">
+      <h1>WELCOME TO KRISHI</h1>
+      <p>Sign in to your account</p>
+    </div>
+    
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <input type="email" id="email" name="email" class="phone-input" placeholder="Enter your email" required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-container">
+          <input type="password" id="password" name="password" class="password-input" placeholder="Enter your password" required>
+        </div>
+      </div>
+      
+      <button type="submit" class="login-btn">Sign In</button>
+      
+      <div class="forgot-password">
+        <a href="#">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
+  <script type="module">
+    import { login } from './auth.js';
+
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        await login({ email, password });
+        window.location.href = 'index2.html';
+      } catch (err) {
+        alert(err.message || 'Login failed');
+      }
+    });
+  </script>
+</body>
+</html>

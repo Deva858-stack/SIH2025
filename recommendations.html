@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommender - Odisha</title>
+    <link rel="stylesheet" href="recommendations.css">
+   
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+            </div>
+            <h1>Crop Recommender</h1>
+            <p>For Odisha's Cropping Seasons</p>
+        </div>
+
+        <form id="recommendation-form">
+            <div class="form-group">
+                <label for="district">District</label>
+                <div class="input-container">
+                    <select id="district" name="district">
+                        <option value="">Select your district</option>
+                        <option value="Cuttack">Cuttack</option>
+                        <option value="Balasore">Balasore</option>
+                        <option value="Puri">Puri</option>
+                        <option value="Sambalpur">Sambalpur</option>
+                        <option value="Koraput">Koraput</option>
+                        <option value="Kalahandi">Kalahandi</option>
+                        <option value="Ganjam">Ganjam</option>
+                        <option value="Angul">Angul</option>
+                        <option value="Rayagada">Rayagada</option>
+                        <option value="Bargarh">Bargarh</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date</label>
+                <div class="input-container">
+                    <input type="date" id="date" name="date" required>
+                </div>
+            </div>
+            
+            <button type="submit" id="recommend-btn" class="submit-btn">
+                <span id="btn-text">Get Recommendations</span>
+                <span id="btn-loader" class="hidden">
+                    <div class="loader"></div>
+                </span>
+            </button>
+        </form>
+
+        <div id="results-section" class="hidden"></div>
+
+        <div class="back-link">
+            <a href="index2.html">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        
+        const form = document.getElementById('recommendation-form');
+        const recommendBtn = document.getElementById('recommend-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        const resultsSection = document.getElementById('results-section');
+        
+        const cropsBySeason = {
+            Kharif: [
+                { name: 'Rice', emoji: '🌾', reason: 'Ideal for monsoon rains.' },
+                { name: 'Maize', emoji: '🌽', reason: 'High demand and adaptable.' },
+                { name: 'Ragi', emoji: '🌱', reason: 'Drought-resistant millet.' },
+                { name: 'Groundnut', emoji: '🥜', reason: 'Good for oil production.' },
+                { name: 'Cotton', emoji: '☁️', reason: 'Thrives in warm, humid weather.' },
+                { name: 'Jute', emoji: '🧵', reason: 'Requires significant water.' }
+            ],
+            Rabi: [
+                { name: 'Wheat', emoji: '🍞', reason: 'Requires cool growing season.' },
+                { name: 'Mustard', emoji: '🌼', reason: 'Key oilseed for the season.' },
+                { name: 'Chickpea', emoji: '🥣', reason: 'Important pulse crop.' },
+                { name: 'Barley', emoji: '🍺', reason: 'Tolerant to frost.' },
+                { name: 'Lentil (Masur)', emoji: '🍲', reason: 'Nutritious and profitable.' },
+                { name: 'Potato', emoji: '🥔', reason: 'High-yield tuber crop.' }
+            ],
+            Zaid: [
+                { name: 'Mung Bean', emoji: '🥗', reason: 'Fast-growing pulse.' },
+                { name: 'Watermelon', emoji: '🍉', reason: 'High market demand in summer.' },
+                { name: 'Cucumber', emoji: '🥒', reason: 'Grows quickly in warm weather.' },
+                { name: 'Pumpkin', emoji: '🎃', reason: 'Hardy and versatile.' }
+            ]
+        };
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            recommendBtn.disabled = true;
+            resultsSection.innerHTML = '';
+            resultsSection.classList.add('hidden');
+
+            setTimeout(() => {
+                const month = new Date(document.getElementById('date').value).getMonth();
+                let season, seasonCrops;
+                
+                // Determine season based on month
+                if (month >= 5 && month <= 9) { 
+                    season = 'Kharif'; 
+                    seasonCrops = cropsBySeason.Kharif; 
+                } 
+                else if (month >= 10 || month <= 3) { 
+                    season = 'Rabi'; 
+                    seasonCrops = cropsBySeason.Rabi; 
+                } 
+                else { 
+                    season = 'Zaid'; 
+                    seasonCrops = cropsBySeason.Zaid; 
+                }
+
+                // Get random recommendations
+                const recommendations = seasonCrops.sort(() => 0.5 - Math.random()).slice(0, 4);
+                
+                // Generate cards HTML
+                let cardsHtml = recommendations.map(crop => `
+                    <div class="recommendation-card">
+                        <span class="crop-emoji">${crop.emoji}</span>
+                        <div class="crop-name">${crop.name}</div>
+                        <div class="crop-reason">${crop.reason}</div>
+                    </div>`).join('');
+
+                // Update results section
+                resultsSection.innerHTML = `
+                    <div class="fade-in">
+                        <div class="results-title">Top 4 Recommendations for <span class="season-name">${season}</span> Season</div>
+                        <div class="recommendations-grid">${cardsHtml}</div>
+                    </div>`;
+                
+                resultsSection.classList.remove('hidden');
+
+                // Reset button state
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                recommendBtn.disabled = false;
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

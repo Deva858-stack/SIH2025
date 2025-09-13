@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farmer Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="sell.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+      </div>
+      <h1>Farmer Marketplace</h1>
+      <p>Review offers and sell your produce at the best price.</p>
+    </div>
+    <div id="marketplace-grid" class="dashboard-grid"></div>
+    <div class="back-link">
+      <a href="index2.html">&larr; Back to Home</a>
+    </div>
+  </div>
+  <script>
+    // --- SIMULATED FARMER'S DATA ---
+    const farmerCrops = [
+      { name: 'Rice', emoji: '🌾', district: 'Cuttack', fieldSize: 3.5, sowingDate: '2025-06-15', growthDuration: 120, buyerRequests: [
+        { company: 'Agro-India Ltd.', price: 2150, status: 'new' },
+        { company: 'National Foods', price: 2200, status: 'new' }
+      ] },
+      { name: 'Ragi', emoji: '🌱', district: 'Koraput', fieldSize: 2.0, sowingDate: '2025-07-01', growthDuration: 90, buyerRequests: [
+        { company: 'Organic Harvest Co.', price: 3500, status: 'new' }
+      ] },
+      { name: 'Sugarcane', emoji: '🎋', district: 'Nayagarh', fieldSize: 5.0, sowingDate: '2025-01-20', growthDuration: 365, buyerRequests: [] },
+      { name: 'Cotton', emoji: '☁', district: 'Rayagada', fieldSize: 4.2, sowingDate: '2025-05-25', growthDuration: 150, buyerRequests: [
+        { company: 'Textile Innovators', price: 7100, status: 'new' },
+        { company: 'Global Cotton Traders', price: 7050, status: 'new' },
+        { company: 'Garment Kings', price: 7120, status: 'new' }
+      ] },
+    ];
+    const grid = document.getElementById('marketplace-grid');
+    function displayMarketplace() {
+      farmerCrops.forEach(crop => {
+        const today = new Date('2025-09-12');
+        const sowingDate = new Date(crop.sowingDate);
+        const harvestDate = new Date(sowingDate);
+        harvestDate.setDate(sowingDate.getDate() + crop.growthDuration);
+        const daysRemaining = Math.ceil(Math.max(0, (harvestDate - today) / (1000 * 60 * 60 * 24)));
+        const predictedYieldPerHa = (3.8 + Math.random() * 2);
+        const totalPredictedYield = (predictedYieldPerHa * crop.fieldSize).toFixed(2);
+        const predictedPrice = (2000 + Math.random() * 500).toFixed(2);
+        const isReady = daysRemaining === 0;
+        const statusText = isReady ? 'Ready to Sell' : 'Nearing Harvest';
+        const statusClass = isReady ? 'badge-ready' : 'badge-nearing';
+
+        let requestsHTML = '<div class="no-requests">No purchase requests yet.</div>';
+        if (crop.buyerRequests.length > 0) {
+          requestsHTML = crop.buyerRequests.map((req, index) => `
+            <div class="request" id="request-${crop.name.replace(/\s+/g, '-')}-${index}">
+              <div class="request-info">
+                <div class="company">${req.company}</div>
+                <div class="price">Offer: ₹ ${req.price} /Quintal</div>
+              </div>
+              <div class="request-actions">
+                <button class="btn-accept" onclick="handleOffer(this, true)">Accept</button>
+                <button class="btn-decline" onclick="handleOffer(this, false)">Decline</button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card fade-in';
+        card.innerHTML = `
+          <div>
+            <div class="card-header">
+              <div>
+                <div class="emoji">${crop.emoji}</div>
+                <div class="crop-title">${crop.name}</div>
+                <div class="crop-meta">${crop.district} - ${crop.fieldSize} Hectares</div>
+              </div>
+              <span class="badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="details-grid">
+              <div class="detail-item">
+                <div class="detail-label">Harvest-Ready On</div>
+                <div class="detail-value">${harvestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Days Remaining</div>
+                <div class="detail-value">${daysRemaining}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Predicted Yield</div>
+                <div class="detail-value">${totalPredictedYield} Tonnes</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Predicted Market Price</div>
+                <div class="detail-value detail-value-price">₹ ${predictedPrice} /Quintal</div>
+              </div>
+            </div>
+          </div>
+          <div class="requests-section">
+            <h3 class="requests-title">Purchase Requests (${crop.buyerRequests.length})</h3>
+            <div class="requests-list">${requestsHTML}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+    function handleOffer(button, accepted) {
+      const requestDiv = button.closest('.request');
+      const actionDiv = button.parentElement;
+      if (accepted) {
+        requestDiv.style.backgroundColor = '#dcfce7';
+        actionDiv.innerHTML = '<span style="color: #166534; font-weight: 700;">Accepted</span>';
+      } else {
+        requestDiv.style.backgroundColor = '#fee2e2';
+        actionDiv.innerHTML = '<span style="color: #991b1b; font-weight: 700;">Declined</span>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', displayMarketplace);
+  </script>
+</body>
+</html>
