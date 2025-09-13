@@ -7,122 +7,6 @@
  <link rel="stylesheet" href="index2.css">
 </head>
 <body>
-  <script type="module">
-    import { watchAuth, logout, addUserCrop, listUserCrops, getUserProfile } from './auth.js';
-
-    const userNameEl = document.createElement('div');
-    userNameEl.style.textAlign = 'center';
-    userNameEl.style.margin = '10px 0';
-    userNameEl.style.color = '#2c5530';
-    userNameEl.style.fontWeight = 'bold';
-    document.body.prepend(userNameEl);
-
-    const topRight = document.createElement('div');
-    topRight.style.position = 'fixed';
-    topRight.style.top = '10px';
-    topRight.style.right = '10px';
-    topRight.style.zIndex = '1000';
-    document.body.appendChild(topRight);
-
-    const btn = document.createElement('button');
-    btn.textContent = 'Logout';
-    btn.className = 'login-btn';
-    btn.style.padding = '8px 16px';
-    btn.style.fontSize = '0.9em';
-    btn.onclick = async () => { await logout(); };
-    topRight.appendChild(btn);
-
-    function renderCropUI(userId) {
-      const container = document.querySelector('.main-container');
-      if (!container) return;
-      
-      const section = document.createElement('div');
-      section.className = 'forecast-section';
-      section.style.marginTop = '20px';
-
-      const title = document.createElement('h2');
-      title.textContent = 'My Crops';
-      section.appendChild(title);
-
-      const form = document.createElement('form');
-      form.style.display = 'flex';
-      form.style.gap = '10px';
-      form.style.justifyContent = 'center';
-      form.style.marginBottom = '15px';
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Crop name (e.g., Rice)';
-      input.required = true;
-      input.style.padding = '10px 12px';
-      input.style.borderRadius = '10px';
-      input.style.border = '2px solid #e1e5e9';
-
-      const save = document.createElement('button');
-      save.type = 'submit';
-      save.textContent = 'Add';
-      save.className = 'login-btn';
-      save.style.padding = '10px 20px';
-
-      form.appendChild(input);
-      form.appendChild(save);
-      section.appendChild(form);
-
-      const list = document.createElement('div');
-      list.className = 'forecast-grid';
-      section.appendChild(list);
-
-      async function refresh() {
-        list.innerHTML = '';
-        try {
-          const crops = await listUserCrops(userId);
-          crops.forEach(c => {
-            const item = document.createElement('div');
-            item.className = 'forecast-day';
-            item.innerHTML = `<div class="day-name">${c.name}</div><div class="day-desc">${new Date(c.createdAt).toLocaleString()}</div>`;
-            list.appendChild(item);
-          });
-        } catch (err) {
-          console.error('Failed to load crops:', err);
-          list.innerHTML = '<div style="text-align: center; color: #666;">Failed to load crops</div>';
-        }
-      }
-
-      form.onsubmit = async (e) => {
-        e.preventDefault();
-        const name = input.value.trim();
-        if (!name) return;
-        try {
-          await addUserCrop(userId, { name });
-          input.value = '';
-          await refresh();
-        } catch (err) {
-          alert('Failed to add crop: ' + err.message);
-        }
-      };
-
-      container.appendChild(section);
-      refresh();
-    }
-
-    watchAuth(async (user) => {
-      if (!user) {
-        window.location.replace('index1.html');
-        return;
-      }
-      try {
-        const profile = await getUserProfile(user.uid).catch(() => null);
-        const name = (profile && profile.name) ? profile.name : 'User';
-        const email = user.email || '';
-        userNameEl.textContent = `Signed in as ${name}${email ? ' • ' + email : ''}`;
-        renderCropUI(user.uid);
-      } catch (err) {
-        console.error('Auth error:', err);
-        userNameEl.textContent = `Signed in as ${user.email || 'User'}`;
-        renderCropUI(user.uid);
-      }
-    });
-  </script>
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-container">
@@ -173,7 +57,7 @@
     <!-- Welcome Section -->
     <div class="welcome-section">
       <!-- <h1>KRUSHI ONE  Dashboard</h1> -->
-      <p data-translate="welcome-subtitle">Your comprehensive agricultural monitoring platform</p>
+      <p style= "color:black" data-translate="welcome-subtitle">Your comprehensive agricultural monitoring platform</p>
     </div>
 
     <!-- Current Temperature Indicator -->

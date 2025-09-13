@@ -39,7 +39,7 @@ body {
   border: 3px solid rgba(76, 175, 80, 0.2);
 }
 .header-icon svg {
-  width: 40px; height: 40px; color: #4CAF50;
+  width: 40px; height: 40px; color: #4CAF50; fill: #4CAF50;
 }
 .header h1 {
   color: #2c5530;
@@ -161,9 +161,9 @@ body {
   padding: 10px;
   border-radius: 10px;
 }
-.detail-label { font-size: 0.85em; color: #555; }
-.detail-value { font-size: 0.95em; font-weight: 700; color: #374151; }
-.detail-value-price { color: #2f855a; }
+.detail-label { font-size: 0.85em; color: #666; }
+.detail-value { font-size: 0.95em; font-weight: 700; color: #333; }
+.detail-value-price { color: #4CAF50; }
 .requests-section { margin-top: 12px; }
 .requests-title {
   font-size: 1em;
@@ -181,7 +181,7 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-.request-info { font-size: 0.95em; color: #374151; }
+.request-info { font-size: 0.95em; color: #333; }
 .request-actions button {
   margin-left: 6px;
   padding: 6px 10px;
@@ -192,10 +192,10 @@ body {
   font-weight: 700;
 }
 .btn-accept { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
-.btn-decline { background: #ef4444; color: white; }
+.btn-decline { background: #f44336; color: white; }
 .no-requests {
   font-size: 0.9em;
-  color: #6b7280;
+  color: #666;
   font-style: italic;
 }
 .fade-in { animation: fadeIn 0.5s ease-out forwards; }

@@ -15,16 +15,16 @@
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
             </div>
-            <h1>Crop Yield Predictor</h1>
-            <p>For Farmers in Odisha</p>
+            <h1 data-translate="pred-title">Crop Yield Predictor</h1>
+            <p data-translate="pred-subtitle">For Farmers in Odisha</p>
         </div>
 
         <form id="prediction-form">
             <div class="form-group">
-                <label for="district">Select District</label>
+                <label for="district" data-translate="pred-district">Select District</label>
                 <div class="input-container">
                     <select id="district" name="district">
-                        <option value="">Select your district</option>
+                        <option value="" data-translate="pred-select-district">Select your district</option>
                         <option value="Cuttack">Cuttack</option>
                         <option value="Balasore">Balasore</option>
                         <option value="Puri">Puri</option>
@@ -40,29 +40,29 @@
             </div>
 
             <div class="form-group">
-                <label for="crop">Select Crop</label>
+                <label for="crop" data-translate="pred-crop">Select Crop</label>
                 <div class="input-container">
                     <select id="crop" name="crop">
-                        <option value="">Select your crop</option>
-                        <option value="Rice">Rice</option>
-                        <option value="Ragi">Ragi</option>
-                        <option value="Mung">Mung</option>
-                        <option value="Cotton">Cotton</option>
-                        <option value="Groundnut">Groundnut</option>
-                        <option value="Sugarcane">Sugarcane</option>
+                        <option value="" data-translate="pred-select-crop">Select your crop</option>
+                        <option value="Rice" data-translate="pred-rice">Rice</option>
+                        <option value="Ragi" data-translate="pred-ragi">Ragi</option>
+                        <option value="Mung" data-translate="pred-mung">Mung</option>
+                        <option value="Cotton" data-translate="pred-cotton">Cotton</option>
+                        <option value="Groundnut" data-translate="pred-groundnut">Groundnut</option>
+                        <option value="Sugarcane" data-translate="pred-sugarcane">Sugarcane</option>
                     </select>
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="field-size">Field Size (in Hectares)</label>
+                <label for="field-size" data-translate="pred-field-size">Field Size (in Hectares)</label>
                 <div class="input-container">
                     <input type="number" id="field-size" name="field-size" placeholder="e.g., 2.5" step="0.1" min="0.1" required>
                 </div>
             </div>
 
             <button type="submit" id="predict-btn" class="submit-btn">
-                <span id="btn-text">Predict Yield</span>
+                <span id="btn-text" data-translate="pred-predict-yield">Predict Yield</span>
                 <span id="btn-loader" class="hidden">
                     <div class="loader"></div>
                 </span>
@@ -71,28 +71,109 @@
 
         <div id="results-section" class="hidden">
             <div class="fade-in">
-                <div class="results-title">Predicted Yield</div>
+                <div class="results-title" data-translate="pred-results-title">Predicted Yield</div>
                 <div class="yield-display">
                     <div class="yield-item">
                         <div id="yield-per-hectare" class="yield-value">4.2</div>
-                        <div class="yield-label">Tonnes / Hectare</div>
+                        <div class="yield-label" data-translate="pred-tonnes-hectare">Tonnes / Hectare</div>
                     </div>
                     <div class="yield-divider"></div>
                     <div class="yield-item">
                         <div id="total-yield" class="yield-value">10.5</div>
-                        <div class="yield-label">Total Tonnes for your field</div>
+                        <div class="yield-label" data-translate="pred-total-tonnes">Total Tonnes for your field</div>
                     </div>
                 </div>
-                <div class="disclaimer">Disclaimer: This is a data-driven estimate. Actual yield may vary.</div>
+                <div class="disclaimer" data-translate="pred-disclaimer">Disclaimer: This is a data-driven estimate. Actual yield may vary.</div>
             </div>
         </div>
 
         <div class="back-link">
-            <a href="index2.html">&larr; Back to Home</a>
+            <a href="index2.html" data-translate="pred-back-home">&larr; Back to Home</a>
         </div>
     </div>
 
     <script>
+        // Translation Data
+        const translations = {
+            en: {
+                'pred-title': 'Crop Yield Predictor',
+                'pred-subtitle': 'For Farmers in Odisha',
+                'pred-district': 'Select District',
+                'pred-select-district': 'Select your district',
+                'pred-crop': 'Select Crop',
+                'pred-select-crop': 'Select your crop',
+                'pred-field-size': 'Field Size (in Hectares)',
+                'pred-predict-yield': 'Predict Yield',
+                'pred-results-title': 'Predicted Yield',
+                'pred-tonnes-hectare': 'Tonnes / Hectare',
+                'pred-total-tonnes': 'Total Tonnes for your field',
+                'pred-disclaimer': 'Disclaimer: This is a data-driven estimate. Actual yield may vary.',
+                'pred-back-home': '← Back to Home',
+                'pred-rice': 'Rice',
+                'pred-ragi': 'Ragi',
+                'pred-mung': 'Mung',
+                'pred-cotton': 'Cotton',
+                'pred-groundnut': 'Groundnut',
+                'pred-sugarcane': 'Sugarcane',
+                'pred-invalid-field': 'Please enter a valid field size.'
+            },
+            hi: {
+                'pred-title': 'फसल उपज भविष्यवाणी',
+                'pred-subtitle': 'ओडिशा के किसानों के लिए',
+                'pred-district': 'जिला चुनें',
+                'pred-select-district': 'अपना जिला चुनें',
+                'pred-crop': 'फसल चुनें',
+                'pred-select-crop': 'अपनी फसल चुनें',
+                'pred-field-size': 'खेत का आकार (हेक्टेयर में)',
+                'pred-predict-yield': 'उपज भविष्यवाणी करें',
+                'pred-results-title': 'भविष्यवाणी की गई उपज',
+                'pred-tonnes-hectare': 'टन / हेक्टेयर',
+                'pred-total-tonnes': 'आपके खेत के लिए कुल टन',
+                'pred-disclaimer': 'अस्वीकरण: यह एक डेटा-संचालित अनुमान है। वास्तविक उपज भिन्न हो सकती है।',
+                'pred-back-home': '← होम पर वापस जाएं',
+                'pred-rice': 'चावल',
+                'pred-ragi': 'रागी',
+                'pred-mung': 'मूंग',
+                'pred-cotton': 'कपास',
+                'pred-groundnut': 'मूंगफली',
+                'pred-sugarcane': 'गन्ना',
+                'pred-invalid-field': 'कृपया एक वैध खेत का आकार दर्ज करें।'
+            },
+            or: {
+                'pred-title': 'ଫସଲ ଫଳ ଭବିଷ୍ୟତବାଣୀ',
+                'pred-subtitle': 'ଓଡ଼ିଶାର କୃଷକମାନଙ୍କ ପାଇଁ',
+                'pred-district': 'ଜିଲ୍ଲା ବାଛନ୍ତୁ',
+                'pred-select-district': 'ଆପଣଙ୍କର ଜିଲ୍ଲା ବାଛନ୍ତୁ',
+                'pred-crop': 'ଫସଲ ବାଛନ୍ତୁ',
+                'pred-select-crop': 'ଆପଣଙ୍କର ଫସଲ ବାଛନ୍ତୁ',
+                'pred-field-size': 'କ୍ଷେତର ଆକାର (ହେକ୍ଟରରେ)',
+                'pred-predict-yield': 'ଫଳ ଭବିଷ୍ୟତବାଣୀ କରନ୍ତୁ',
+                'pred-results-title': 'ଭବିଷ୍ୟତବାଣୀ କରାଯାଇଥିବା ଫଳ',
+                'pred-tonnes-hectare': 'ଟନ / ହେକ୍ଟର',
+                'pred-total-tonnes': 'ଆପଣଙ୍କର କ୍ଷେତ ପାଇଁ ସମୁଦାୟ ଟନ',
+                'pred-disclaimer': 'ଅସ୍ୱୀକାର: ଏହା ଏକ ଡାଟା-ଚାଳିତ ଅନୁମାନ। ପ୍ରକୃତ ଫଳ ଭିନ୍ନ ହୋଇପାରେ।',
+                'pred-back-home': '← ଘରକୁ ଫେରନ୍ତୁ',
+                'pred-rice': 'ଚାଉଳ',
+                'pred-ragi': 'ରାଗି',
+                'pred-mung': 'ମୁଗ',
+                'pred-cotton': 'କପଡ଼ା',
+                'pred-groundnut': 'ଚିନାବାଦାମ',
+                'pred-sugarcane': 'ଗନ୍ନା',
+                'pred-invalid-field': 'ଦୟାକରି ଏକ ବୈଧ କ୍ଷେତର ଆକାର ପ୍ରବେଶ କରନ୍ତୁ।'
+            }
+        };
+
+        // Translation Function
+        function translatePage(lang) {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
         const form = document.getElementById('prediction-form');
         const predictBtn = document.getElementById('predict-btn');
         const btnText = document.getElementById('btn-text');
@@ -115,7 +196,8 @@
             const fieldSize = parseFloat(document.getElementById('field-size').value);
 
             if (isNaN(fieldSize) || fieldSize <= 0) {
-                alert("Please enter a valid field size.");
+                const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+                alert(translations[currentLang]['pred-invalid-field']);
                 // Restore button state
                 btnText.classList.remove('hidden');
                 btnLoader.classList.add('hidden');
@@ -166,6 +248,12 @@
                 predictBtn.disabled = false;
 
             }, 1500); // Simulate a 1.5-second network delay
+        });
+
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            translatePage(savedLanguage);
         });
     </script>
 </body>

@@ -11,19 +11,109 @@
   <div class="container">
     <div class="header">
       <div class="header-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2.25A2.25 2.25 0 017.5 5.25V6A3 3 0 0010.5 9h3A3 3 0 0016.5 6v-.75A2.25 2.25 0 0118.75 3H21M3 21h18M3 8.25h18M3 15h18" />
         </svg>
       </div>
-      <h1>Farmer Marketplace</h1>
-      <p>Review offers and sell your produce at the best price.</p>
+      <h1 data-translate="sell-title">Farmer Marketplace</h1>
+      <p data-translate="sell-subtitle">Review offers and sell your produce at the best price.</p>
     </div>
     <div id="marketplace-grid" class="dashboard-grid"></div>
     <div class="back-link">
-      <a href="index2.html">&larr; Back to Home</a>
+      <a href="index2.html" data-translate="sell-back-home">&larr; Back to Home</a>
     </div>
   </div>
   <script>
+    // Translation Data
+    const translations = {
+      en: {
+        'sell-title': 'Farmer Marketplace',
+        'sell-subtitle': 'Review offers and sell your produce at the best price.',
+        'sell-back-home': '← Back to Home',
+        'sell-rice': 'Rice',
+        'sell-ragi': 'Ragi',
+        'sell-sugarcane': 'Sugarcane',
+        'sell-cotton': 'Cotton',
+        'sell-ready-to-sell': 'Ready to Sell',
+        'sell-nearing-harvest': 'Nearing Harvest',
+        'sell-harvest-ready-on': 'Harvest-Ready On',
+        'sell-days-remaining': 'Days Remaining',
+        'sell-predicted-yield': 'Predicted Yield',
+        'sell-predicted-market-price': 'Predicted Market Price',
+        'sell-purchase-requests': 'Purchase Requests',
+        'sell-no-requests': 'No purchase requests yet.',
+        'sell-offer': 'Offer:',
+        'sell-accept': 'Accept',
+        'sell-decline': 'Decline',
+        'sell-accepted': 'Accepted',
+        'sell-declined': 'Declined',
+        'sell-hectares': 'Hectares',
+        'sell-tonnes': 'Tonnes',
+        'sell-rupees-per-quintal': '₹ /Quintal'
+      },
+      hi: {
+        'sell-title': 'किसान बाजार',
+        'sell-subtitle': 'प्रस्तावों की समीक्षा करें और अपनी उपज को सबसे अच्छी कीमत पर बेचें।',
+        'sell-back-home': '← होम पर वापस जाएं',
+        'sell-rice': 'चावल',
+        'sell-ragi': 'रागी',
+        'sell-sugarcane': 'गन्ना',
+        'sell-cotton': 'कपास',
+        'sell-ready-to-sell': 'बेचने के लिए तैयार',
+        'sell-nearing-harvest': 'कटाई निकट',
+        'sell-harvest-ready-on': 'कटाई तैयार',
+        'sell-days-remaining': 'दिन शेष',
+        'sell-predicted-yield': 'भविष्यवाणी की गई उपज',
+        'sell-predicted-market-price': 'भविष्यवाणी की गई बाजार कीमत',
+        'sell-purchase-requests': 'खरीद अनुरोध',
+        'sell-no-requests': 'अभी तक कोई खरीद अनुरोध नहीं।',
+        'sell-offer': 'प्रस्ताव:',
+        'sell-accept': 'स्वीकार करें',
+        'sell-decline': 'अस्वीकार करें',
+        'sell-accepted': 'स्वीकृत',
+        'sell-declined': 'अस्वीकृत',
+        'sell-hectares': 'हेक्टेयर',
+        'sell-tonnes': 'टन',
+        'sell-rupees-per-quintal': '₹ /क्विंटल'
+      },
+      or: {
+        'sell-title': 'କୃଷକ ବଜାର',
+        'sell-subtitle': 'ପ୍ରସ୍ତାବଗୁଡ଼ିକର ସମୀକ୍ଷା କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କର ଉତ୍ପାଦକୁ ସର୍ବୋତ୍ତମ ମୂଲ୍ୟରେ ବିକ୍ରୟ କରନ୍ତୁ।',
+        'sell-back-home': '← ଘରକୁ ଫେରନ୍ତୁ',
+        'sell-rice': 'ଚାଉଳ',
+        'sell-ragi': 'ରାଗି',
+        'sell-sugarcane': 'ଗନ୍ନା',
+        'sell-cotton': 'କପଡ଼ା',
+        'sell-ready-to-sell': 'ବିକ୍ରୟ ପାଇଁ ପ୍ରସ୍ତୁତ',
+        'sell-nearing-harvest': 'କଟାଇ ନିକଟ',
+        'sell-harvest-ready-on': 'କଟାଇ ପ୍ରସ୍ତୁତ',
+        'sell-days-remaining': 'ଦିନ ବାକି',
+        'sell-predicted-yield': 'ଭବିଷ୍ୟତବାଣୀ କରାଯାଇଥିବା ଫଳ',
+        'sell-predicted-market-price': 'ଭବିଷ୍ୟତବାଣୀ କରାଯାଇଥିବା ବଜାର ମୂଲ୍ୟ',
+        'sell-purchase-requests': 'କ୍ରୟ ଅନୁରୋଧ',
+        'sell-no-requests': 'ଏଯାବତ୍ କୌଣସି କ୍ରୟ ଅନୁରୋଧ ନାହିଁ।',
+        'sell-offer': 'ପ୍ରସ୍ତାବ:',
+        'sell-accept': 'ଗ୍ରହଣ କରନ୍ତୁ',
+        'sell-decline': 'ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ',
+        'sell-accepted': 'ଗ୍ରହଣ କରାଯାଇଛି',
+        'sell-declined': 'ପ୍ରତ୍ୟାଖ୍ୟାନ କରାଯାଇଛି',
+        'sell-hectares': 'ହେକ୍ଟର',
+        'sell-tonnes': 'ଟନ',
+        'sell-rupees-per-quintal': '₹ /କ୍ୱିଣ୍ଟଲ'
+      }
+    };
+
+    // Translation Function
+    function translatePage(lang) {
+      const elements = document.querySelectorAll('[data-translate]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+          element.textContent = translations[lang][key];
+        }
+      });
+    }
+
     // --- SIMULATED FARMER'S DATA ---
     const farmerCrops = [
       { name: 'Rice', emoji: '🌾', district: 'Cuttack', fieldSize: 3.5, sowingDate: '2025-06-15', growthDuration: 120, buyerRequests: [
@@ -42,6 +132,8 @@
     ];
     const grid = document.getElementById('marketplace-grid');
     function displayMarketplace() {
+      const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+      
       farmerCrops.forEach(crop => {
         const today = new Date('2025-09-12');
         const sowingDate = new Date(crop.sowingDate);
@@ -52,20 +144,24 @@
         const totalPredictedYield = (predictedYieldPerHa * crop.fieldSize).toFixed(2);
         const predictedPrice = (2000 + Math.random() * 500).toFixed(2);
         const isReady = daysRemaining === 0;
-        const statusText = isReady ? 'Ready to Sell' : 'Nearing Harvest';
+        const statusText = isReady ? translations[currentLang]['sell-ready-to-sell'] : translations[currentLang]['sell-nearing-harvest'];
         const statusClass = isReady ? 'badge-ready' : 'badge-nearing';
 
-        let requestsHTML = '<div class="no-requests">No purchase requests yet.</div>';
+        // Get crop name translation
+        const cropNameKey = `sell-${crop.name.toLowerCase()}`;
+        const cropNameTranslated = translations[currentLang][cropNameKey] || crop.name;
+
+        let requestsHTML = `<div class="no-requests">${translations[currentLang]['sell-no-requests']}</div>`;
         if (crop.buyerRequests.length > 0) {
           requestsHTML = crop.buyerRequests.map((req, index) => `
             <div class="request" id="request-${crop.name.replace(/\s+/g, '-')}-${index}">
               <div class="request-info">
                 <div class="company">${req.company}</div>
-                <div class="price">Offer: ₹ ${req.price} /Quintal</div>
+                <div class="price">${translations[currentLang]['sell-offer']} ₹ ${req.price} ${translations[currentLang]['sell-rupees-per-quintal']}</div>
               </div>
               <div class="request-actions">
-                <button class="btn-accept" onclick="handleOffer(this, true)">Accept</button>
-                <button class="btn-decline" onclick="handleOffer(this, false)">Decline</button>
+                <button class="btn-accept" onclick="handleOffer(this, true)">${translations[currentLang]['sell-accept']}</button>
+                <button class="btn-decline" onclick="handleOffer(this, false)">${translations[currentLang]['sell-decline']}</button>
               </div>
             </div>
           `).join('');
@@ -78,32 +174,32 @@
             <div class="card-header">
               <div>
                 <div class="emoji">${crop.emoji}</div>
-                <div class="crop-title">${crop.name}</div>
-                <div class="crop-meta">${crop.district} - ${crop.fieldSize} Hectares</div>
+                <div class="crop-title">${cropNameTranslated}</div>
+                <div class="crop-meta">${crop.district} - ${crop.fieldSize} ${translations[currentLang]['sell-hectares']}</div>
               </div>
               <span class="badge ${statusClass}">${statusText}</span>
             </div>
             <div class="details-grid">
               <div class="detail-item">
-                <div class="detail-label">Harvest-Ready On</div>
+                <div class="detail-label">${translations[currentLang]['sell-harvest-ready-on']}</div>
                 <div class="detail-value">${harvestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
               </div>
               <div class="detail-item">
-                <div class="detail-label">Days Remaining</div>
+                <div class="detail-label">${translations[currentLang]['sell-days-remaining']}</div>
                 <div class="detail-value">${daysRemaining}</div>
               </div>
               <div class="detail-item">
-                <div class="detail-label">Predicted Yield</div>
-                <div class="detail-value">${totalPredictedYield} Tonnes</div>
+                <div class="detail-label">${translations[currentLang]['sell-predicted-yield']}</div>
+                <div class="detail-value">${totalPredictedYield} ${translations[currentLang]['sell-tonnes']}</div>
               </div>
               <div class="detail-item">
-                <div class="detail-label">Predicted Market Price</div>
-                <div class="detail-value detail-value-price">₹ ${predictedPrice} /Quintal</div>
+                <div class="detail-label">${translations[currentLang]['sell-predicted-market-price']}</div>
+                <div class="detail-value detail-value-price">₹ ${predictedPrice} ${translations[currentLang]['sell-rupees-per-quintal']}</div>
               </div>
             </div>
           </div>
           <div class="requests-section">
-            <h3 class="requests-title">Purchase Requests (${crop.buyerRequests.length})</h3>
+            <h3 class="requests-title">${translations[currentLang]['sell-purchase-requests']} (${crop.buyerRequests.length})</h3>
             <div class="requests-list">${requestsHTML}</div>
           </div>
         `;
@@ -111,17 +207,22 @@
       });
     }
     function handleOffer(button, accepted) {
+      const currentLang = localStorage.getItem('selectedLanguage') || 'en';
       const requestDiv = button.closest('.request');
       const actionDiv = button.parentElement;
       if (accepted) {
         requestDiv.style.backgroundColor = '#dcfce7';
-        actionDiv.innerHTML = '<span style="color: #166534; font-weight: 700;">Accepted</span>';
+        actionDiv.innerHTML = `<span style="color: #166534; font-weight: 700;">${translations[currentLang]['sell-accepted']}</span>`;
       } else {
         requestDiv.style.backgroundColor = '#fee2e2';
-        actionDiv.innerHTML = '<span style="color: #991b1b; font-weight: 700;">Declined</span>';
+        actionDiv.innerHTML = `<span style="color: #991b1b; font-weight: 700;">${translations[currentLang]['sell-declined']}</span>`;
       }
     }
-    document.addEventListener('DOMContentLoaded', displayMarketplace);
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+      translatePage(savedLanguage);
+      displayMarketplace();
+    });
   </script>
 </body>
 </html>
