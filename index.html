@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRISHI - Farmer Registration</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="registration-container">
+    <div class="header">
+      <h1>FARMER REGISTRATION</h1>
+      <p>Join KRISHI - Your Agricultural Partner</p>
+    </div>
+    
+    <div class="form-note">
+      <i>📋</i>
+      Please fill in all the required information to complete your registration as a farmer on our platform.
+    </div>
+    
+    <form id="register-form" action="#" method="post">
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <div class="input-container">
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password <span class="required">*</span></label>
+        <div class="input-container">
+          <input type="password" id="password" name="password" placeholder="Create a password" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name">Full Name <span class="required">*</span></label>
+        <div class="input-container">
+          <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="district">District/Area <span class="required">*</span></label>
+        <div class="input-container">
+          <select id="district" name="district" required>
+            <option value="">Select your district</option>
+            <option value="Angul">Angul</option>
+            <option value="Balangir">Balangir</option>
+            <option value="Balasore">Balasore</option>
+            <option value="Bargarh">Bargarh</option>
+            <option value="Bhadrak">Bhadrak</option>
+            <option value="Boudh">Boudh</option>
+            <option value="Cuttack">Cuttack</option>
+            <option value="Deogarh">Deogarh</option>
+            <option value="Dhenkanal">Dhenkanal</option>
+            <option value="Gajapati">Gajapati</option>
+            <option value="Ganjam">Ganjam</option>
+            <option value="Jagatsinghpur">Jagatsinghpur</option>
+            <option value="Jajpur">Jajpur</option>
+            <option value="Jharsuguda">Jharsuguda</option>
+            <option value="Kalahandi">Kalahandi</option>
+            <option value="Kandhamal">Kandhamal</option>
+            <option value="Kendrapara">Kendrapara</option>
+            <option value="Kendujhar">Kendujhar</option>
+            <option value="Khordha">Khordha</option>
+            <option value="Koraput">Koraput</option>
+            <option value="Malkangiri">Malkangiri</option>
+            <option value="Mayurbhanj">Mayurbhanj</option>
+            <option value="Nabarangpur">Nabarangpur</option>
+            <option value="Nayagarh">Nayagarh</option>
+            <option value="Nuapada">Nuapada</option>
+            <option value="Puri">Puri</option>
+            <option value="Rayagada">Rayagada</option>
+            <option value="Sambalpur">Sambalpur</option>
+            <option value="Subarnapur">Subarnapur</option>
+            <option value="Sundargarh">Sundargarh</option>
+          </select>
+        </div>
+      </div>
+      
+      <button type="submit" class="register-btn">Register as Farmer</button>
+      
+      <div class="login-link">
+        Already have an account? <a href="index1.html">Sign in here</a>
+      </div>
+    </form>
+  </div>
+  <script type="module">
+    import { registerFarmer } from './auth.js';
+
+    const form = document.getElementById('register-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const district = document.getElementById('district').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        await registerFarmer({ name, district, email, password });
+        alert('Registration successful. Please sign in.');
+        window.location.href = 'index1.html';
+      } catch (err) {
+        alert(err.message || 'Registration failed');
+      }
+    });
+  </script>
+</body>
+</html>

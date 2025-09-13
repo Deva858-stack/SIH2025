@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Dashboard</title>
+ <link rel="stylesheet" href="index2.css">
+</head>
+<body>
+  <script type="module">
+    import { watchAuth, logout, addUserCrop, listUserCrops, getUserProfile } from './auth.js';
+
+    const userNameEl = document.createElement('div');
+    userNameEl.style.textAlign = 'center';
+    userNameEl.style.margin = '10px 0';
+    userNameEl.style.color = '#2c5530';
+    userNameEl.style.fontWeight = 'bold';
+    document.body.prepend(userNameEl);
+
+    const topRight = document.createElement('div');
+    topRight.style.position = 'fixed';
+    topRight.style.top = '10px';
+    topRight.style.right = '10px';
+    topRight.style.zIndex = '1000';
+    document.body.appendChild(topRight);
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Logout';
+    btn.className = 'login-btn';
+    btn.style.padding = '8px 16px';
+    btn.style.fontSize = '0.9em';
+    btn.onclick = async () => { await logout(); };
+    topRight.appendChild(btn);
+
+    function renderCropUI(userId) {
+      const container = document.querySelector('.main-container');
+      if (!container) return;
+      
+      const section = document.createElement('div');
+      section.className = 'forecast-section';
+      section.style.marginTop = '20px';
+
+      const title = document.createElement('h2');
+      title.textContent = 'My Crops';
+      section.appendChild(title);
+
+      const form = document.createElement('form');
+      form.style.display = 'flex';
+      form.style.gap = '10px';
+      form.style.justifyContent = 'center';
+      form.style.marginBottom = '15px';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Crop name (e.g., Rice)';
+      input.required = true;
+      input.style.padding = '10px 12px';
+      input.style.borderRadius = '10px';
+      input.style.border = '2px solid #e1e5e9';
+
+      const save = document.createElement('button');
+      save.type = 'submit';
+      save.textContent = 'Add';
+      save.className = 'login-btn';
+      save.style.padding = '10px 20px';
+
+      form.appendChild(input);
+      form.appendChild(save);
+      section.appendChild(form);
+
+      const list = document.createElement('div');
+      list.className = 'forecast-grid';
+      section.appendChild(list);
+
+      async function refresh() {
+        list.innerHTML = '';
+        try {
+          const crops = await listUserCrops(userId);
+          crops.forEach(c => {
+            const item = document.createElement('div');
+            item.className = 'forecast-day';
+            item.innerHTML = `<div class="day-name">${c.name}</div><div class="day-desc">${new Date(c.createdAt).toLocaleString()}</div>`;
+            list.appendChild(item);
+          });
+        } catch (err) {
+          console.error('Failed to load crops:', err);
+          list.innerHTML = '<div style="text-align: center; color: #666;">Failed to load crops</div>';
+        }
+      }
+
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = input.value.trim();
+        if (!name) return;
+        try {
+          await addUserCrop(userId, { name });
+          input.value = '';
+          await refresh();
+        } catch (err) {
+          alert('Failed to add crop: ' + err.message);
+        }
+      };
+
+      container.appendChild(section);
+      refresh();
+    }
+
+    watchAuth(async (user) => {
+      if (!user) {
+        window.location.replace('index1.html');
+        return;
+      }
+      try {
+        const profile = await getUserProfile(user.uid).catch(() => null);
+        const name = (profile && profile.name) ? profile.name : 'User';
+        const email = user.email || '';
+        userNameEl.textContent = `Signed in as ${name}${email ? ' • ' + email : ''}`;
+        renderCropUI(user.uid);
+      } catch (err) {
+        console.error('Auth error:', err);
+        userNameEl.textContent = `Signed in as ${user.email || 'User'}`;
+        renderCropUI(user.uid);
+      }
+    });
+  </script>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="hamburger-menu" id="hamburgerMenu" onclick="console.log('Direct click test')">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+      <div class="logo">KRUSHI ONE</div>
+      
+      <!-- Language Selection -->
+      <div class="language-selector">
+        <div class="language-dropdown">
+          <button class="language-btn" id="languageBtn">
+            <span class="language-flag">🌐</span>
+            <span class="language-text" id="currentLanguage">English</span>
+            <span class="language-arrow">▼</span>
+          </button>
+          <div class="language-menu" id="languageMenu">
+            <div class="language-option" data-lang="en">
+              <span class="language-flag">🇺🇸</span>
+              <span class="language-text">English</span>
+            </div>
+            <div class="language-option" data-lang="hi">
+              <span class="language-flag">🇮🇳</span>
+              <span class="language-text">हिन्दी</span>
+            </div>
+            <div class="language-option" data-lang="or">
+              <span class="language-flag">🇮🇳</span>
+              <span class="language-text">ଓଡ଼ିଆ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <ul class="nav-links">
+        <li><a href="index2.html" data-translate="nav-home">Home</a></li>
+        <li><a href="mycrop.html" data-translate="nav-mycrop">My crop</a></li>
+        <li><a href="recommendations.html" data-translate="nav-recommendations">Recommendations </a></li>
+        <li><a href="prediction.html" data-translate="nav-prediction">Prediction</a></li>
+        <li><a href="sell.html" data-translate="nav-sell">Sell</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <!-- <h1>KRUSHI ONE  Dashboard</h1> -->
+      <p data-translate="welcome-subtitle">Your comprehensive agricultural monitoring platform</p>
+    </div>
+
+    <!-- Current Temperature Indicator -->
+    <div class="temperature-indicator">
+      <h2 data-translate="weather-title"> Today's Weather</h2>
+      <div class="current-temp">
+        <div class="temp-value">32°</div>
+        <div class="temp-unit">C</div>
+      </div>
+      <div class="temp-details">
+        <p data-translate="weather-hot">🔥 Hot & Humid • Feels like 36°C</p>
+        <p data-translate="weather-humidity">💧 Humidity: 78% • 💨 Wind: 12 km/h</p>
+      </div>
+    </div>
+
+    <!-- 7-Day Forecast -->
+    <div class="forecast-section">
+      <h2 data-translate="forecast-title"> 7-Day Weather Forecast</h2>
+      <div class="forecast-grid">
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-today">Today</div>
+          <div class="day-icon">🔥</div>
+          <div class="day-temp">32°C</div>
+          <div class="day-desc" data-translate="forecast-hot">Hot & Humid</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-tomorrow">Tomorrow</div>
+          <div class="day-icon">☀️</div>
+          <div class="day-temp">34°C</div>
+          <div class="day-desc" data-translate="forecast-very-hot">Very Hot</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-wed">Wed</div>
+          <div class="day-icon">⛈️</div>
+          <div class="day-temp">30°C</div>
+          <div class="day-desc" data-translate="forecast-thunderstorm">Thunderstorm</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-thu">Thu</div>
+          <div class="day-icon">🌧️</div>
+          <div class="day-temp">28°C</div>
+          <div class="day-desc" data-translate="forecast-heavy-rain">Heavy Rain</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-fri">Fri</div>
+          <div class="day-icon">☁️</div>
+          <div class="day-temp">31°C</div>
+          <div class="day-desc" data-translate="forecast-humid">Humid</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-sat">Sat</div>
+          <div class="day-icon">🌤️</div>
+          <div class="day-temp">33°C</div>
+          <div class="day-desc" data-translate="forecast-hot-weather">Hot</div>
+        </div>
+        <div class="forecast-day">
+          <div class="day-name" data-translate="forecast-sun">Sun</div>
+          <div class="day-icon">🌡️</div>
+          <div class="day-temp">35°C</div>
+          <div class="day-desc" data-translate="forecast-scorching">Scorching</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards Section -->
+    <!-- 
+    <div class="cards-section">
+      <div class="card humidity-card">
+        <div class="card-icon">💧</div>
+        <h3>Humidity</h3>
+        <div class="card-value">78%</div>
+        <div class="card-unit">Relative Humidity</div>
+        <div class="card-desc">
+          High humidity typical of Odisha's coastal climate. Monitor for fungal diseases.
+        </div>
+        <div class="status-indicator status-moderate">High</div>
+      </div>
+
+      <div class="card rainfall-card">
+        <div class="card-icon">🌧️</div>
+        <h3>Rainfall</h3>
+        <div class="card-value">45.2</div>
+        <div class="card-unit">mm today</div>
+        <div class="card-desc">
+          Heavy rainfall typical of Odisha monsoon. Excellent for rice cultivation.
+        </div>
+        <div class="status-indicator status-good">Excellent</div>
+      </div>
+
+      <div class="card soil-card">
+        <div class="card-icon">🌱</div>
+        <h3>Soil Health</h3>
+        <div class="card-value">92%</div>
+        <div class="card-unit">Health Index</div>
+        <div class="card-desc">
+          Excellent soil moisture from monsoon rains. Perfect for Odisha's rice and vegetable crops.
+        </div>
+        <div class="status-indicator status-good">Excellent</div>
+      </div>
+    </div>
+    -->
+
+    <!-- Navigation Cards Section -->
+    <div class="navigation-cards-section">
+      <!-- <h2>🚀 Quick Actions</h2> -->
+      <div class="nav-cards-grid">
+        <a href="mycrop.html" class="nav-card mycrop-card">
+          <!-- <div class="nav-card-icon">🌾</div> -->
+          <h3 data-translate="card-mycrop">My Crop</h3>
+          <p data-translate="card-mycrop-desc">Manage your crops and track growth</p>
+        </a>
+        
+        <a href="recommendations.html" class="nav-card recommendations-card">
+          <!-- <div class="nav-card-icon">💡</div> -->
+          <h3 data-translate="card-recommendations">Recommendations</h3>
+          <p data-translate="card-recommendations-desc">Get expert farming advice</p>
+        </a>
+        
+        <a href="prediction.html" class="nav-card prediction-card">
+          <!-- <div class="nav-card-icon">🔮</div> -->
+          <h3 data-translate="card-prediction">Prediction</h3>
+          <p data-translate="card-prediction-desc">Weather and yield predictions</p>
+        </a>
+        
+        <a href="sell.html" class="nav-card sell-card">
+          <!-- <div class="nav-card-icon">💰</div> -->
+          <h3 data-translate="card-sell">Sell</h3>
+          <p data-translate="card-sell-desc">Market your produce</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <!-- Left Section - Branding -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg class="globe-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          <span class="logo-text">KRUSHI ONE</span>
+        </div>
+        <p class="footer-copyright">© 2025 KRUSHI ONE. All rights reserved.</p>
+      </div>
+
+      <!-- Middle Section - Navigation Links -->
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 class="footer-heading" data-translate="footer-product">Product</h4>
+          <ul class="footer-list">
+            <li><a href="mycrop.html" data-translate="card-mycrop">My Crop</a></li>
+            <li><a href="recommendations.html" data-translate="card-recommendations">Recommendations</a></li>
+            <li><a href="prediction.html" data-translate="card-prediction">Prediction</a></li>
+            <li><a href="sell.html" data-translate="card-sell">Sell</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4 class="footer-heading" data-translate="footer-company">Company</h4>
+          <ul class="footer-list">
+            <li><a href="#about" data-translate="footer-about">About Us</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact" data-translate="footer-contact">Contact Us</a></li>
+            <li><a href="#careers">Careers</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4 class="footer-heading" data-translate="footer-support">Support</h4>
+          <ul class="footer-list">
+            <li><a href="#help" data-translate="footer-help">Help Center</a></li>
+            <li><a href="#terms" data-translate="footer-terms">Terms & Conditions</a></li>
+            <li><a href="#privacy" data-translate="footer-privacy">Privacy Policy</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Section - Social Media -->
+      <div class="footer-social">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="social-icons">
+          <a href="#" class="social-icon" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="YouTube">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="TikTok">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-card-container">
+      <a href="mycrop.html" class="mobile-menu-card">
+        <div class="mobile-menu-card-icon">🌾</div>
+        <div class="mobile-menu-card-content">
+          <h4 data-translate="card-mycrop">My Crop</h4>
+        </div>
+      </a>
+    </div>
+    
+    <div class="mobile-menu-card-container">
+      <a href="recommendations.html" class="mobile-menu-card">
+        <div class="mobile-menu-card-icon">💡</div>
+        <div class="mobile-menu-card-content">
+          <h4 data-translate="card-recommendations">Recommendations</h4>
+        </div>
+      </a>
+    </div>
+    
+    <div class="mobile-menu-card-container">
+      <a href="prediction.html" class="mobile-menu-card">
+        <div class="mobile-menu-card-icon">🔮</div>
+        <div class="mobile-menu-card-content">
+          <h4 data-translate="card-prediction">Prediction</h4>
+        </div>
+      </a>
+    </div>
+    
+    <div class="mobile-menu-card-container">
+      <a href="sell.html" class="mobile-menu-card">
+        <div class="mobile-menu-card-icon">💰</div>
+        <div class="mobile-menu-card-content">
+          <h4 data-translate="card-sell">Sell</h4>
+        </div>
+      </a>
+    </div>
+    
+    <!-- Mobile Language Selector -->
+    <div class="mobile-language-section">
+      <h4 class="mobile-language-title" data-translate="language-title">Language / भाषा / ଭାଷା</h4>
+      <div class="mobile-language-options">
+        <button class="mobile-language-btn" data-lang="en">
+          <span class="language-flag">🇺🇸</span>
+          <span class="language-text">English</span>
+        </button>
+        <button class="mobile-language-btn" data-lang="hi">
+          <span class="language-flag">🇮🇳</span>
+          <span class="language-text">हिन्दी</span>
+        </button>
+        <button class="mobile-language-btn" data-lang="or">
+          <span class="language-flag">🇮🇳</span>
+          <span class="language-text">ଓଡ଼ିଆ</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple Mobile Menu Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing mobile menu...');
+      
+      const hamburgerMenu = document.getElementById('hamburgerMenu');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+      console.log('Elements found:', {
+        hamburger: !!hamburgerMenu,
+        menu: !!mobileMenu,
+        overlay: !!mobileMenuOverlay
+      });
+
+      if (!hamburgerMenu || !mobileMenu || !mobileMenuOverlay) {
+        console.error('Missing elements!');
+        return;
+      }
+
+      // Simple toggle function
+      function toggleMenu() {
+        console.log('Toggle called!');
+        const isActive = mobileMenu.classList.contains('active');
+        console.log('Currently active:', isActive);
+        
+        if (isActive) {
+          // Close menu
+          hamburgerMenu.classList.remove('active');
+          mobileMenu.classList.remove('active');
+          mobileMenuOverlay.classList.remove('active');
+          document.body.style.overflow = '';
+          console.log('Menu closed');
+        } else {
+          // Open menu
+          hamburgerMenu.classList.add('active');
+          mobileMenu.classList.add('active');
+          mobileMenuOverlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          console.log('Menu opened');
+        }
+      }
+
+      // Add click listener
+      hamburgerMenu.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Hamburger clicked!');
+        toggleMenu();
+      };
+
+      // Close on overlay click
+      mobileMenuOverlay.onclick = function() {
+        console.log('Overlay clicked!');
+        toggleMenu();
+      };
+
+      // Close on menu card click
+      const cards = document.querySelectorAll('.mobile-menu-card');
+      cards.forEach(card => {
+        card.onclick = function() {
+          console.log('Card clicked!');
+          toggleMenu();
+        };
+      });
+
+      // Also close on container click
+      const containers = document.querySelectorAll('.mobile-menu-card-container');
+      containers.forEach(container => {
+        container.onclick = function() {
+          console.log('Container clicked!');
+          toggleMenu();
+        };
+      });
+
+      // Close on escape
+      document.onkeydown = function(e) {
+        if (e.key === 'Escape') {
+          console.log('Escape pressed!');
+          toggleMenu();
+        }
+      };
+
+      console.log('Mobile menu ready!');
+    });
+
+    // Translation Data
+    const translations = {
+      en: {
+        // Navigation
+        'nav-home': 'Home',
+        'nav-mycrop': 'My crop',
+        'nav-recommendations': 'Recommendations',
+        'nav-prediction': 'Prediction',
+        'nav-sell': 'Sell',
+        'language-title': 'Language / भाषा / ଭାଷା',
+        
+        // Main Content
+        'welcome-subtitle': 'Your comprehensive agricultural monitoring platform',
+        'weather-title': 'Today\'s Weather',
+        'weather-hot': 'Hot & Humid • Feels like 36°C',
+        'weather-humidity': 'Humidity: 78% • Wind: 12 km/h',
+        'forecast-title': '7-Day Weather Forecast',
+        'forecast-today': 'Today',
+        'forecast-tomorrow': 'Tomorrow',
+        'forecast-wed': 'Wed',
+        'forecast-thu': 'Thu',
+        'forecast-fri': 'Fri',
+        'forecast-sat': 'Sat',
+        'forecast-sun': 'Sun',
+        'forecast-hot': 'Hot & Humid',
+        'forecast-very-hot': 'Very Hot',
+        'forecast-thunderstorm': 'Thunderstorm',
+        'forecast-heavy-rain': 'Heavy Rain',
+        'forecast-humid': 'Humid',
+        'forecast-hot-weather': 'Hot',
+        'forecast-scorching': 'Scorching',
+        
+        // Cards
+        'card-mycrop': 'My Crop',
+        'card-recommendations': 'Recommendations',
+        'card-prediction': 'Prediction',
+        'card-sell': 'Sell',
+        'card-mycrop-desc': 'Track your crops and their growth stages',
+        'card-recommendations-desc': 'Get personalized crop recommendations',
+        'card-prediction-desc': 'Weather and yield predictions',
+        'card-sell-desc': 'Sell your produce in the marketplace',
+        
+        // Footer
+        'footer-product': 'Product',
+        'footer-company': 'Company',
+        'footer-support': 'Support',
+        'footer-features': 'Features',
+        'footer-pricing': 'Pricing',
+        'footer-about': 'About Us',
+        'footer-contact': 'Contact',
+        'footer-help': 'Help Center',
+        'footer-privacy': 'Privacy Policy',
+        'footer-terms': 'Terms of Service'
+      },
+      hi: {
+        // Navigation
+        'nav-home': 'होम',
+        'nav-mycrop': 'मेरी फसल',
+        'nav-recommendations': 'सुझाव',
+        'nav-prediction': 'भविष्यवाणी',
+        'nav-sell': 'बेचें',
+        'language-title': 'Language / भाषा / ଭାଷା',
+        
+        // Main Content
+        'welcome-subtitle': 'आपका व्यापक कृषि निगरानी प्लेटफॉर्म',
+        'weather-title': 'आज का मौसम',
+        'weather-hot': 'गर्म और आर्द्र • 36°C जैसा लगता है',
+        'weather-humidity': 'आर्द्रता: 78% • हवा: 12 किमी/घं',
+        'forecast-title': '7-दिन का मौसम पूर्वानुमान',
+        'forecast-today': 'आज',
+        'forecast-tomorrow': 'कल',
+        'forecast-wed': 'बुध',
+        'forecast-thu': 'गुरु',
+        'forecast-fri': 'शुक्र',
+        'forecast-sat': 'शनि',
+        'forecast-sun': 'रवि',
+        'forecast-hot': 'गर्म और आर्द्र',
+        'forecast-very-hot': 'बहुत गर्म',
+        'forecast-thunderstorm': 'तूफान',
+        'forecast-heavy-rain': 'भारी बारिश',
+        'forecast-humid': 'आर्द्र',
+        'forecast-hot-weather': 'गर्म',
+        'forecast-scorching': 'तपता हुआ',
+        
+        // Cards
+        'card-mycrop': 'मेरी फसल',
+        'card-recommendations': 'सुझाव',
+        'card-prediction': 'भविष्यवाणी',
+        'card-sell': 'बेचें',
+        'card-mycrop-desc': 'अपनी फसलों और उनकी वृद्धि अवस्थाओं को ट्रैक करें',
+        'card-recommendations-desc': 'व्यक्तिगत फसल सुझाव प्राप्त करें',
+        'card-prediction-desc': 'मौसम और उपज भविष्यवाणी',
+        'card-sell-desc': 'बाजार में अपनी उपज बेचें',
+        
+        // Footer
+        'footer-product': 'उत्पाद',
+        'footer-company': 'कंपनी',
+        'footer-support': 'सहायता',
+        'footer-features': 'विशेषताएं',
+        'footer-pricing': 'मूल्य निर्धारण',
+        'footer-about': 'हमारे बारे में',
+        'footer-contact': 'संपर्क',
+        'footer-help': 'सहायता केंद्र',
+        'footer-privacy': 'गोपनीयता नीति',
+        'footer-terms': 'सेवा की शर्तें'
+      },
+      or: {
+        // Navigation
+        'nav-home': 'ଘର',
+        'nav-mycrop': 'ମୋର ଫସଲ',
+        'nav-recommendations': 'ପରାମର୍ଶ',
+        'nav-prediction': 'ଭବିଷ୍ୟତବାଣୀ',
+        'nav-sell': 'ବିକ୍ରୟ',
+        'language-title': 'Language / भाषा / ଭାଷା',
+        
+        // Main Content
+        'welcome-subtitle': 'ଆପଣଙ୍କର ସମ୍ପୂର୍ଣ୍ଣ କୃଷି ନିରୀକ୍ଷଣ ପ୍ଲାଟଫର୍ମ',
+        'weather-title': 'ଆଜିର ପାଣିପାଗ',
+        'weather-hot': 'ଗରମ ଏବଂ ଆର୍ଦ୍ର • ୩୬°C ଭଳି ଲାଗୁଛି',
+        'weather-humidity': 'ଆର୍ଦ୍ରତା: ୭୮% • ବାୟୁ: ୧୨ କିମି/ଘଣ୍ଟା',
+        'forecast-title': '୭-ଦିନର ପାଣିପାଗ ପୂର୍ବାନୁମାନ',
+        'forecast-today': 'ଆଜି',
+        'forecast-tomorrow': 'କାଲି',
+        'forecast-wed': 'ବୁଧ',
+        'forecast-thu': 'ଗୁରୁ',
+        'forecast-fri': 'ଶୁକ୍ର',
+        'forecast-sat': 'ଶନି',
+        'forecast-sun': 'ରବି',
+        'forecast-hot': 'ଗରମ ଏବଂ ଆର୍ଦ୍ର',
+        'forecast-very-hot': 'ବହୁତ ଗରମ',
+        'forecast-thunderstorm': 'ଝଡ଼',
+        'forecast-heavy-rain': 'ଭାରି ବର୍ଷା',
+        'forecast-humid': 'ଆର୍ଦ୍ର',
+        'forecast-hot-weather': 'ଗରମ',
+        'forecast-scorching': 'ଜଳୁଥିବା',
+        
+        // Cards
+        'card-mycrop': 'ମୋର ଫସଲ',
+        'card-recommendations': 'ପରାମର୍ଶ',
+        'card-prediction': 'ଭବିଷ୍ୟତବାଣୀ',
+        'card-sell': 'ବିକ୍ରୟ',
+        'card-mycrop-desc': 'ଆପଣଙ୍କର ଫସଲ ଏବଂ ସେମାନଙ୍କର ବୃଦ୍ଧି ଅବସ୍ଥା ଟ୍ରାକ୍ କରନ୍ତୁ',
+        'card-recommendations-desc': 'ବ୍ୟକ୍ତିଗତ ଫସଲ ପରାମର୍ଶ ପ୍ରାପ୍ତ କରନ୍ତୁ',
+        'card-prediction-desc': 'ପାଣିପାଗ ଏବଂ ଫଳ ଭବିଷ୍ୟତବାଣୀ',
+        'card-sell-desc': 'ବଜାରରେ ଆପଣଙ୍କର ଉତ୍ପାଦ ବିକ୍ରୟ କରନ୍ତୁ',
+        
+        // Footer
+        'footer-product': 'ଉତ୍ପାଦ',
+        'footer-company': 'କମ୍ପାନୀ',
+        'footer-support': 'ସହାୟତା',
+        'footer-features': 'ବିଶେଷତା',
+        'footer-pricing': 'ମୂଲ୍ୟ ନିର୍ଦ୍ଧାରଣ',
+        'footer-about': 'ଆମ ବିଷୟରେ',
+        'footer-contact': 'ଯୋଗାଯୋଗ',
+        'footer-help': 'ସହାୟତା କେନ୍ଦ୍ର',
+        'footer-privacy': 'ଗୋପନୀୟତା ନୀତି',
+        'footer-terms': 'ସେବାର ଶର୍ତ୍ତ'
+      }
+    };
+
+    // Translation Function
+    function translatePage(lang) {
+      const elements = document.querySelectorAll('[data-translate]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+          element.textContent = translations[lang][key];
+        }
+      });
+    }
+
+    // Language Selector Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const languageBtn = document.getElementById('languageBtn');
+      const languageMenu = document.getElementById('languageMenu');
+      const currentLanguage = document.getElementById('currentLanguage');
+      const languageOptions = document.querySelectorAll('.language-option');
+      const mobileLanguageBtns = document.querySelectorAll('.mobile-language-btn');
+
+      // Desktop language dropdown toggle
+      if (languageBtn && languageMenu) {
+        languageBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          languageMenu.classList.toggle('active');
+          languageBtn.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!languageBtn.contains(e.target) && !languageMenu.contains(e.target)) {
+            languageMenu.classList.remove('active');
+            languageBtn.classList.remove('active');
+          }
+        });
+
+        // Language option selection
+        languageOptions.forEach(option => {
+          option.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            const text = this.querySelector('.language-text').textContent;
+            const flag = this.querySelector('.language-flag').textContent;
+            
+            // Update current language display
+            currentLanguage.textContent = text;
+            languageBtn.querySelector('.language-flag').textContent = flag;
+            
+            // Update selected state
+            languageOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Close dropdown
+            languageMenu.classList.remove('active');
+            languageBtn.classList.remove('active');
+            
+            // Store language preference
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Translate the page
+            translatePage(lang);
+            
+            console.log('Language changed to:', lang);
+          });
+        });
+      }
+
+      // Mobile language selection
+      mobileLanguageBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const lang = this.getAttribute('data-lang');
+          const text = this.querySelector('.language-text').textContent;
+          
+          // Update selected state
+          mobileLanguageBtns.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          // Store language preference
+          localStorage.setItem('selectedLanguage', lang);
+          
+          // Translate the page
+          translatePage(lang);
+          
+          console.log('Mobile language changed to:', lang);
+        });
+      });
+
+      // Load saved language preference
+      const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+      const savedOption = document.querySelector(`[data-lang="${savedLanguage}"]`);
+      if (savedOption) {
+        const text = savedOption.querySelector('.language-text').textContent;
+        const flag = savedOption.querySelector('.language-flag').textContent;
+        
+        // Update desktop display
+        if (currentLanguage) {
+          currentLanguage.textContent = text;
+          languageBtn.querySelector('.language-flag').textContent = flag;
+        }
+        
+        // Update selected states
+        languageOptions.forEach(opt => opt.classList.remove('selected'));
+        mobileLanguageBtns.forEach(btn => btn.classList.remove('selected'));
+        
+        savedOption.classList.add('selected');
+        const mobileBtn = document.querySelector(`.mobile-language-btn[data-lang="${savedLanguage}"]`);
+        if (mobileBtn) mobileBtn.classList.add('selected');
+        
+        // Translate the page on load
+        translatePage(savedLanguage);
+      }
+    });
+  </script>
+</body>
+</html>

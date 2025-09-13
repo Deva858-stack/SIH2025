@@ -1,0 +1,117 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url("back.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.header { text-align: center; margin-bottom: 30px; }
+.header-icon {
+    display: flex; justify-content: center; align-items: center;
+    margin: 0 auto 20px; width: 80px; height: 80px;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-radius: 50%; border: 3px solid rgba(76, 175, 80, 0.2);
+}
+.header-icon svg { width: 40px; height: 40px; color: #4CAF50; }
+.header h1 { color: #2c5530; font-size: 2.2em; margin-bottom: 8px; font-weight: bold; }
+.header p { color: #666; font-size: 1em; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.card {
+    background: #fff;
+    border: 2px solid #e1e5e9;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15); border-color: #4CAF50; }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.emoji { font-size: 1.8em; line-height: 1; }
+.crop-title { font-size: 1.2em; font-weight: 700; color: #2c5530; }
+.crop-meta { font-size: 0.9em; color: #666; margin-top: 2px; }
+.badge { font-size: 0.75em; font-weight: 700; padding: 6px 10px; border-radius: 9999px; border: 1px solid transparent; }
+.badge-progress { background-color: rgba(59, 130, 246, 0.12); color: #1d4ed8; border-color: rgba(59, 130, 246, 0.25); }
+.badge-ready { background-color: rgba(76, 175, 80, 0.12); color: #2c7a2c; border-color: rgba(76, 175, 80, 0.25); }
+
+.section { margin: 18px 0 0 0; }
+.section-labels { display: flex; justify-content: space-between; margin-bottom: 6px; color: #374151; font-size: 0.9em; font-weight: 600; }
+.progress { width: 100%; background-color: #e5e7eb; height: 10px; border-radius: 9999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #4CAF50); border-radius: 9999px; width: 0; transition: width 0.6s ease; }
+.sown-date { text-align: right; color: #9ca3af; font-size: 0.75em; margin-top: 4px; }
+
+.stats { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; margin-top: 16px; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+.stat-label { color: #6b7280; font-size: 0.9em; font-weight: 600; }
+.stat-value { color: #2f855a; font-size: 1em; font-weight: 700; }
+
+.fade-in { animation: fadeIn 0.5s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Responsive */
+@media (max-width: 1024px) { 
+    .container { padding: 32px; } 
+    .dashboard-grid { gap: 20px; }
+}
+
+@media (max-width: 900px) {
+    .container { padding: 28px; }
+    .dashboard-grid { gap: 18px; }
+}
+
+@media (max-width: 768px) { 
+    body { padding: 15px; } 
+    .container { padding: 20px 15px; } 
+    .dashboard-grid { 
+        grid-template-columns: 1fr; 
+        gap: 16px; 
+    } 
+}
+
+@media (max-width: 480px) { 
+    .container { padding: 15px 10px; } 
+    .header h1 { font-size: 1.8em; } 
+    .header-icon { width: 70px; height: 70px; } 
+    .header-icon svg { width: 35px; height: 35px; } 
+    .card { padding: 16px; }
+    .dashboard-grid { 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+    }
+}
+
+@media (max-width: 360px) { 
+    .container { padding: 12px 8px; } 
+    .header h1 { font-size: 1.6em; } 
+    .dashboard-grid { 
+        grid-template-columns: 1fr; 
+        gap: 10px; 
+    }
+}
