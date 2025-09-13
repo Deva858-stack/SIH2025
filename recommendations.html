@@ -15,16 +15,16 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
             </div>
-            <h1>Crop Recommender</h1>
-            <p>For Odisha's Cropping Seasons</p>
+            <h1 data-translate="rec-title">Crop Recommender</h1>
+            <p data-translate="rec-subtitle">For Odisha's Cropping Seasons</p>
         </div>
 
         <form id="recommendation-form">
             <div class="form-group">
-                <label for="district">District</label>
+                <label for="district" data-translate="rec-district">District</label>
                 <div class="input-container">
                     <select id="district" name="district">
-                        <option value="">Select your district</option>
+                        <option value="" data-translate="rec-select-district">Select your district</option>
                         <option value="Cuttack">Cuttack</option>
                         <option value="Balasore">Balasore</option>
                         <option value="Puri">Puri</option>
@@ -40,14 +40,14 @@
             </div>
             
             <div class="form-group">
-                <label for="date">Date</label>
+                <label for="date" data-translate="rec-date">Date</label>
                 <div class="input-container">
                     <input type="date" id="date" name="date" required>
                 </div>
             </div>
             
             <button type="submit" id="recommend-btn" class="submit-btn">
-                <span id="btn-text">Get Recommendations</span>
+                <span id="btn-text" data-translate="rec-get-recommendations">Get Recommendations</span>
                 <span id="btn-loader" class="hidden">
                     <div class="loader"></div>
                 </span>
@@ -57,11 +57,164 @@
         <div id="results-section" class="hidden"></div>
 
         <div class="back-link">
-            <a href="index2.html">&larr; Back to Home</a>
+            <a href="index2.html" data-translate="rec-back-home">&larr; Back to Home</a>
         </div>
     </div>
 
     <script>
+        // Translation Data
+        const translations = {
+            en: {
+                'rec-title': 'Crop Recommender',
+                'rec-subtitle': 'For Odisha\'s Cropping Seasons',
+                'rec-district': 'District',
+                'rec-select-district': 'Select your district',
+                'rec-date': 'Date',
+                'rec-get-recommendations': 'Get Recommendations',
+                'rec-back-home': '← Back to Home',
+                'rec-results-title': 'Top 4 Recommendations for',
+                'rec-season': 'Season',
+                'rec-kharif': 'Kharif',
+                'rec-rabi': 'Rabi',
+                'rec-zaid': 'Zaid',
+                'rec-rice': 'Rice',
+                'rec-maize': 'Maize',
+                'rec-ragi': 'Ragi',
+                'rec-groundnut': 'Groundnut',
+                'rec-cotton': 'Cotton',
+                'rec-jute': 'Jute',
+                'rec-wheat': 'Wheat',
+                'rec-mustard': 'Mustard',
+                'rec-chickpea': 'Chickpea',
+                'rec-barley': 'Barley',
+                'rec-lentil': 'Lentil (Masur)',
+                'rec-potato': 'Potato',
+                'rec-mung-bean': 'Mung Bean',
+                'rec-watermelon': 'Watermelon',
+                'rec-cucumber': 'Cucumber',
+                'rec-pumpkin': 'Pumpkin',
+                'rec-rice-reason': 'Ideal for monsoon rains.',
+                'rec-maize-reason': 'High demand and adaptable.',
+                'rec-ragi-reason': 'Drought-resistant millet.',
+                'rec-groundnut-reason': 'Good for oil production.',
+                'rec-cotton-reason': 'Thrives in warm, humid weather.',
+                'rec-jute-reason': 'Requires significant water.',
+                'rec-wheat-reason': 'Requires cool growing season.',
+                'rec-mustard-reason': 'Key oilseed for the season.',
+                'rec-chickpea-reason': 'Important pulse crop.',
+                'rec-barley-reason': 'Tolerant to frost.',
+                'rec-lentil-reason': 'Nutritious and profitable.',
+                'rec-potato-reason': 'High-yield tuber crop.',
+                'rec-mung-bean-reason': 'Fast-growing pulse.',
+                'rec-watermelon-reason': 'High market demand in summer.',
+                'rec-cucumber-reason': 'Grows quickly in warm weather.',
+                'rec-pumpkin-reason': 'Hardy and versatile.'
+            },
+            hi: {
+                'rec-title': 'फसल सुझावकर्ता',
+                'rec-subtitle': 'ओडिशा के फसल मौसम के लिए',
+                'rec-district': 'जिला',
+                'rec-select-district': 'अपना जिला चुनें',
+                'rec-date': 'तारीख',
+                'rec-get-recommendations': 'सुझाव प्राप्त करें',
+                'rec-back-home': '← होम पर वापस जाएं',
+                'rec-results-title': 'शीर्ष 4 सुझाव',
+                'rec-season': 'मौसम',
+                'rec-kharif': 'खरीफ',
+                'rec-rabi': 'रबी',
+                'rec-zaid': 'जायद',
+                'rec-rice': 'चावल',
+                'rec-maize': 'मक्का',
+                'rec-ragi': 'रागी',
+                'rec-groundnut': 'मूंगफली',
+                'rec-cotton': 'कपास',
+                'rec-jute': 'जूट',
+                'rec-wheat': 'गेहूं',
+                'rec-mustard': 'सरसों',
+                'rec-chickpea': 'चना',
+                'rec-barley': 'जौ',
+                'rec-lentil': 'मसूर',
+                'rec-potato': 'आलू',
+                'rec-mung-bean': 'मूंग',
+                'rec-watermelon': 'तरबूज',
+                'rec-cucumber': 'खीरा',
+                'rec-pumpkin': 'कद्दू',
+                'rec-rice-reason': 'मानसून की बारिश के लिए आदर्श।',
+                'rec-maize-reason': 'उच्च मांग और अनुकूलनीय।',
+                'rec-ragi-reason': 'सूखा-प्रतिरोधी बाजरा।',
+                'rec-groundnut-reason': 'तेल उत्पादन के लिए अच्छा।',
+                'rec-cotton-reason': 'गर्म, आर्द्र मौसम में पनपता है।',
+                'rec-jute-reason': 'पर्याप्त पानी की आवश्यकता।',
+                'rec-wheat-reason': 'ठंडे बढ़ते मौसम की आवश्यकता।',
+                'rec-mustard-reason': 'मौसम के लिए प्रमुख तिलहन।',
+                'rec-chickpea-reason': 'महत्वपूर्ण दलहनी फसल।',
+                'rec-barley-reason': 'पाला सहनशील।',
+                'rec-lentil-reason': 'पौष्टिक और लाभदायक।',
+                'rec-potato-reason': 'उच्च उपज वाली कंद फसल।',
+                'rec-mung-bean-reason': 'तेजी से बढ़ने वाली दलहन।',
+                'rec-watermelon-reason': 'गर्मियों में उच्च बाजार मांग।',
+                'rec-cucumber-reason': 'गर्म मौसम में तेजी से बढ़ता है।',
+                'rec-pumpkin-reason': 'मजबूत और बहुमुखी।'
+            },
+            or: {
+                'rec-title': 'ଫସଲ ପରାମର୍ଶକ',
+                'rec-subtitle': 'ଓଡ଼ିଶାର ଫସଲ ଋତୁ ପାଇଁ',
+                'rec-district': 'ଜିଲ୍ଲା',
+                'rec-select-district': 'ଆପଣଙ୍କର ଜିଲ୍ଲା ବାଛନ୍ତୁ',
+                'rec-date': 'ତାରିଖ',
+                'rec-get-recommendations': 'ପରାମର୍ଶ ପ୍ରାପ୍ତ କରନ୍ତୁ',
+                'rec-back-home': '← ଘରକୁ ଫେରନ୍ତୁ',
+                'rec-results-title': 'ଶ୍ରେଷ୍ଠ ୪ ପରାମର୍ଶ',
+                'rec-season': 'ଋତୁ',
+                'rec-kharif': 'ଖରିଫ',
+                'rec-rabi': 'ରବି',
+                'rec-zaid': 'ଜାୟଦ',
+                'rec-rice': 'ଚାଉଳ',
+                'rec-maize': 'ମକା',
+                'rec-ragi': 'ରାଗି',
+                'rec-groundnut': 'ଚିନାବାଦାମ',
+                'rec-cotton': 'କପଡ଼ା',
+                'rec-jute': 'ପାଟ',
+                'rec-wheat': 'ଗହମ',
+                'rec-mustard': 'ସୋରିଷ',
+                'rec-chickpea': 'ବୁଟ',
+                'rec-barley': 'ଯବ',
+                'rec-lentil': 'ମସୁର',
+                'rec-potato': 'ଆଳୁ',
+                'rec-mung-bean': 'ମୁଗ',
+                'rec-watermelon': 'ତରବୁଜ',
+                'rec-cucumber': 'କାକୁଡ଼ି',
+                'rec-pumpkin': 'କଦଳୀ',
+                'rec-rice-reason': 'ମୌସୁମୀ ବର୍ଷା ପାଇଁ ଆଦର୍ଶ।',
+                'rec-maize-reason': 'ଉଚ୍ଚ ଚାହିଦା ଏବଂ ଅନୁକୂଳ।',
+                'rec-ragi-reason': 'ଶୁଷ୍କ-ପ୍ରତିରୋଧୀ ମିଲେଟ।',
+                'rec-groundnut-reason': 'ତେଲ ଉତ୍ପାଦନ ପାଇଁ ଭଲ।',
+                'rec-cotton-reason': 'ଗରମ, ଆର୍ଦ୍ର ପାଣିପାଗରେ ବଢ଼େ।',
+                'rec-jute-reason': 'ପର୍ଯ୍ୟାପ୍ତ ପାଣି ଆବଶ୍ୟକ।',
+                'rec-wheat-reason': 'ଥଣ୍ଡା ବଢ଼ିବା ଋତୁ ଆବଶ୍ୟକ।',
+                'rec-mustard-reason': 'ଋତୁ ପାଇଁ ମୁଖ୍ୟ ତେଲବିହନ।',
+                'rec-chickpea-reason': 'ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଡାଲି ଫସଲ।',
+                'rec-barley-reason': 'ପାଲା ସହନଶୀଳ।',
+                'rec-lentil-reason': 'ପୁଷ୍ଟିକର ଏବଂ ଲାଭଦାୟକ।',
+                'rec-potato-reason': 'ଉଚ୍ଚ ଫଳ କନ୍ଦ ଫସଲ।',
+                'rec-mung-bean-reason': 'ଦ୍ରୁତ ବଢ଼ୁଥିବା ଡାଲି।',
+                'rec-watermelon-reason': 'ଗ୍ରୀଷ୍ମରେ ଉଚ୍ଚ ବଜାର ଚାହିଦା।',
+                'rec-cucumber-reason': 'ଗରମ ପାଣିପାଗରେ ଦ୍ରୁତ ବଢ଼େ।',
+                'rec-pumpkin-reason': 'ମଜବୁତ ଏବଂ ବହୁମୁଖୀ।'
+            }
+        };
+
+        // Translation Function
+        function translatePage(lang) {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
         // Set today's date as default
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
         
@@ -73,26 +226,26 @@
         
         const cropsBySeason = {
             Kharif: [
-                { name: 'Rice', emoji: '🌾', reason: 'Ideal for monsoon rains.' },
-                { name: 'Maize', emoji: '🌽', reason: 'High demand and adaptable.' },
-                { name: 'Ragi', emoji: '🌱', reason: 'Drought-resistant millet.' },
-                { name: 'Groundnut', emoji: '🥜', reason: 'Good for oil production.' },
-                { name: 'Cotton', emoji: '☁️', reason: 'Thrives in warm, humid weather.' },
-                { name: 'Jute', emoji: '🧵', reason: 'Requires significant water.' }
+                { name: 'Rice', emoji: '🌾', reason: 'rec-rice-reason', nameKey: 'rec-rice' },
+                { name: 'Maize', emoji: '🌽', reason: 'rec-maize-reason', nameKey: 'rec-maize' },
+                { name: 'Ragi', emoji: '🌱', reason: 'rec-ragi-reason', nameKey: 'rec-ragi' },
+                { name: 'Groundnut', emoji: '🥜', reason: 'rec-groundnut-reason', nameKey: 'rec-groundnut' },
+                { name: 'Cotton', emoji: '☁️', reason: 'rec-cotton-reason', nameKey: 'rec-cotton' },
+                { name: 'Jute', emoji: '🧵', reason: 'rec-jute-reason', nameKey: 'rec-jute' }
             ],
             Rabi: [
-                { name: 'Wheat', emoji: '🍞', reason: 'Requires cool growing season.' },
-                { name: 'Mustard', emoji: '🌼', reason: 'Key oilseed for the season.' },
-                { name: 'Chickpea', emoji: '🥣', reason: 'Important pulse crop.' },
-                { name: 'Barley', emoji: '🍺', reason: 'Tolerant to frost.' },
-                { name: 'Lentil (Masur)', emoji: '🍲', reason: 'Nutritious and profitable.' },
-                { name: 'Potato', emoji: '🥔', reason: 'High-yield tuber crop.' }
+                { name: 'Wheat', emoji: '🍞', reason: 'rec-wheat-reason', nameKey: 'rec-wheat' },
+                { name: 'Mustard', emoji: '🌼', reason: 'rec-mustard-reason', nameKey: 'rec-mustard' },
+                { name: 'Chickpea', emoji: '🥣', reason: 'rec-chickpea-reason', nameKey: 'rec-chickpea' },
+                { name: 'Barley', emoji: '🍺', reason: 'rec-barley-reason', nameKey: 'rec-barley' },
+                { name: 'Lentil (Masur)', emoji: '🍲', reason: 'rec-lentil-reason', nameKey: 'rec-lentil' },
+                { name: 'Potato', emoji: '🥔', reason: 'rec-potato-reason', nameKey: 'rec-potato' }
             ],
             Zaid: [
-                { name: 'Mung Bean', emoji: '🥗', reason: 'Fast-growing pulse.' },
-                { name: 'Watermelon', emoji: '🍉', reason: 'High market demand in summer.' },
-                { name: 'Cucumber', emoji: '🥒', reason: 'Grows quickly in warm weather.' },
-                { name: 'Pumpkin', emoji: '🎃', reason: 'Hardy and versatile.' }
+                { name: 'Mung Bean', emoji: '🥗', reason: 'rec-mung-bean-reason', nameKey: 'rec-mung-bean' },
+                { name: 'Watermelon', emoji: '🍉', reason: 'rec-watermelon-reason', nameKey: 'rec-watermelon' },
+                { name: 'Cucumber', emoji: '🥒', reason: 'rec-cucumber-reason', nameKey: 'rec-cucumber' },
+                { name: 'Pumpkin', emoji: '🎃', reason: 'rec-pumpkin-reason', nameKey: 'rec-pumpkin' }
             ]
         };
 
@@ -124,21 +277,28 @@
                     seasonCrops = cropsBySeason.Zaid; 
                 }
 
+                // Get current language
+                const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+                
                 // Get random recommendations
                 const recommendations = seasonCrops.sort(() => 0.5 - Math.random()).slice(0, 4);
                 
-                // Generate cards HTML
+                // Generate cards HTML with translations
                 let cardsHtml = recommendations.map(crop => `
                     <div class="recommendation-card">
                         <span class="crop-emoji">${crop.emoji}</span>
-                        <div class="crop-name">${crop.name}</div>
-                        <div class="crop-reason">${crop.reason}</div>
+                        <div class="crop-name">${translations[currentLang][crop.nameKey] || crop.name}</div>
+                        <div class="crop-reason">${translations[currentLang][crop.reason] || crop.reason}</div>
                     </div>`).join('');
+
+                // Get season translation
+                const seasonKey = season === 'Kharif' ? 'rec-kharif' : season === 'Rabi' ? 'rec-rabi' : 'rec-zaid';
+                const seasonTranslated = translations[currentLang][seasonKey] || season;
 
                 // Update results section
                 resultsSection.innerHTML = `
                     <div class="fade-in">
-                        <div class="results-title">Top 4 Recommendations for <span class="season-name">${season}</span> Season</div>
+                        <div class="results-title">${translations[currentLang]['rec-results-title']} <span class="season-name">${seasonTranslated}</span> ${translations[currentLang]['rec-season']}</div>
                         <div class="recommendations-grid">${cardsHtml}</div>
                     </div>`;
                 
@@ -149,6 +309,12 @@
                 btnLoader.classList.add('hidden');
                 recommendBtn.disabled = false;
             }, 1200);
+        });
+
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            translatePage(savedLanguage);
         });
     </script>
 </body>

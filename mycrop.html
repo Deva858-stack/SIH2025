@@ -14,16 +14,89 @@
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
             </div>
-            <h1>My Crops Dashboard</h1>
-            <p>An overview of your current farming operations.</p>
+            <h1 data-translate="crop-title">My Crops Dashboard</h1>
+            <p data-translate="crop-subtitle">An overview of your current farming operations.</p>
         </div>
 
         <div id="crop-dashboard-grid" class="dashboard-grid">
             <!-- Cards will be injected here -->
         </div>
+        
+        <div class="back-link">
+            <a href="index2.html" data-translate="crop-back-home">&larr; Back to Home</a>
+        </div>
     </div>
 
     <script>
+        // Translation Data
+        const translations = {
+            en: {
+                'crop-title': 'My Crops Dashboard',
+                'crop-subtitle': 'An overview of your current farming operations.',
+                'crop-rice': 'Rice',
+                'crop-ragi': 'Ragi',
+                'crop-sugarcane': 'Sugarcane',
+                'crop-cotton': 'Cotton',
+                'crop-in-progress': 'In Progress',
+                'crop-ready': 'Ready',
+                'crop-growth-progress': 'Growth Progress',
+                'crop-sown-on': 'Sown on:',
+                'crop-predicted-yield': 'Predicted Yield',
+                'crop-predicted-price': 'Predicted Price',
+                'crop-hectares': 'Hectares',
+                'crop-tonnes-per-hectare': 'T/Ha',
+                'crop-rupees-per-quintal': '₹ /Quintal',
+                'crop-back-home': '← Back to Home'
+            },
+            hi: {
+                'crop-title': 'मेरी फसल डैशबोर्ड',
+                'crop-subtitle': 'आपके वर्तमान कृषि संचालन का अवलोकन।',
+                'crop-rice': 'चावल',
+                'crop-ragi': 'रागी',
+                'crop-sugarcane': 'गन्ना',
+                'crop-cotton': 'कपास',
+                'crop-in-progress': 'प्रगति में',
+                'crop-ready': 'तैयार',
+                'crop-growth-progress': 'वृद्धि प्रगति',
+                'crop-sown-on': 'बोया गया:',
+                'crop-predicted-yield': 'भविष्यवाणी की गई उपज',
+                'crop-predicted-price': 'भविष्यवाणी की गई कीमत',
+                'crop-hectares': 'हेक्टेयर',
+                'crop-tonnes-per-hectare': 'टी/हे',
+                'crop-rupees-per-quintal': '₹ /क्विंटल',
+                'crop-back-home': '← होम पर वापस जाएं'
+            },
+            or: {
+                'crop-title': 'ମୋର ଫସଲ ଡ୍ୟାସବୋର୍ଡ',
+                'crop-subtitle': 'ଆପଣଙ୍କର ବର୍ତ୍ତମାନ କୃଷି କାର୍ଯ୍ୟର ଅବଲୋକନ।',
+                'crop-rice': 'ଚାଉଳ',
+                'crop-ragi': 'ରାଗି',
+                'crop-sugarcane': 'ଗନ୍ନା',
+                'crop-cotton': 'କପଡ଼ା',
+                'crop-in-progress': 'ପ୍ରଗତିରେ',
+                'crop-ready': 'ପ୍ରସ୍ତୁତ',
+                'crop-growth-progress': 'ବୃଦ୍ଧି ପ୍ରଗତି',
+                'crop-sown-on': 'ବୁଣା ଯାଇଥିଲା:',
+                'crop-predicted-yield': 'ଭବିଷ୍ୟତବାଣୀ କରାଯାଇଥିବା ଫଳ',
+                'crop-predicted-price': 'ଭବିଷ୍ୟତବାଣୀ କରାଯାଇଥିବା ମୂଲ୍ୟ',
+                'crop-hectares': 'ହେକ୍ଟର',
+                'crop-tonnes-per-hectare': 'ଟି/ହେ',
+                'crop-rupees-per-quintal': '₹ /କ୍ୱିଣ୍ଟଲ',
+                'crop-back-home': '← ଘରକୁ ଫେରନ୍ତୁ'
+            }
+        };
+
+        // Translation Function
+        function translatePage(lang) {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
         // --- SIMULATED FARMER'S DATA ---
         // In a real application, this data would come from a database.
         const farmerCrops = [
@@ -64,6 +137,8 @@
         const grid = document.getElementById('crop-dashboard-grid');
 
         function displayCrops() {
+            const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+            
             farmerCrops.forEach(crop => {
                 // --- Progress Calculation ---
                 const today = new Date();
@@ -75,6 +150,10 @@
                 const predictedYield = (3.8 + Math.random() * 2).toFixed(2);
                 const predictedPrice = (2000 + Math.random() * 500).toFixed(2);
                 
+                // Get crop name translation
+                const cropNameKey = `crop-${crop.name.toLowerCase()}`;
+                const cropNameTranslated = translations[currentLang][cropNameKey] || crop.name;
+                
                 const card = document.createElement('div');
                 card.className = 'card fade-in';
                 card.innerHTML = `
@@ -82,29 +161,33 @@
                         <div class="card-header">
                             <div>
                                 <div class="emoji">${crop.emoji}</div>
-                                <div class="crop-title">${crop.name}</div>
-                                <div class="crop-meta">${crop.district} - ${crop.fieldSize} Hectares</div>
+                                <div class="crop-title">${cropNameTranslated}</div>
+                                <div class="crop-meta">${crop.district} - ${crop.fieldSize} ${translations[currentLang]['crop-hectares']}</div>
                             </div>
-                            <span class="badge ${progress < 100 ? 'badge-progress' : 'badge-ready'}">${progress < 100 ? 'In Progress' : 'Ready'}</span>
+                            <span class="badge ${progress < 100 ? 'badge-progress' : 'badge-ready'}">${progress < 100 ? translations[currentLang]['crop-in-progress'] : translations[currentLang]['crop-ready']}</span>
                         </div>
 
                         <div class="section">
-                            <div class="section-labels"><span>Growth Progress</span><span>${progress}%</span></div>
+                            <div class="section-labels"><span>${translations[currentLang]['crop-growth-progress']}</span><span>${progress}%</span></div>
                             <div class="progress"><div class="progress-fill" style="width: ${progress}%"></div></div>
-                            <div class="sown-date">Sown on: ${sowingDate.toLocaleDateString()}</div>
+                            <div class="sown-date">${translations[currentLang]['crop-sown-on']} ${sowingDate.toLocaleDateString()}</div>
                         </div>
                     </div>
 
                     <div class="stats">
-                        <div class="stat-row"><div class="stat-label">Predicted Yield</div><div class="stat-value">${predictedYield} T/Ha</div></div>
-                        <div class="stat-row"><div class="stat-label">Predicted Price</div><div class="stat-value">₹ ${predictedPrice} /Quintal</div></div>
+                        <div class="stat-row"><div class="stat-label">${translations[currentLang]['crop-predicted-yield']}</div><div class="stat-value">${predictedYield} ${translations[currentLang]['crop-tonnes-per-hectare']}</div></div>
+                        <div class="stat-row"><div class="stat-label">${translations[currentLang]['crop-predicted-price']}</div><div class="stat-value">₹ ${predictedPrice} ${translations[currentLang]['crop-rupees-per-quintal']}</div></div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        document.addEventListener('DOMContentLoaded', displayCrops);
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            translatePage(savedLanguage);
+            displayCrops();
+        });
     </script>
 </body>
 </html>
